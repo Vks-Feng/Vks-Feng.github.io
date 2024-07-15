@@ -1,0 +1,697 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>CSAPP_Chapter7 | Vks🐱</title><meta name="author" content="Vks"><meta name="copyright" content="Vks"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本文章是观看学习B站up九曲阑干大佬所记的笔记，下附大佬的B站主页链接：九曲阑干的个人空间-九曲阑干个人主页-哔哩哔哩视频 (bilibili.com) 链接 —— Linking引入概念链接是将各种代码和数据收集并组合成一个文件的过程，最终得到的文件可以被加载到内存执行 链接的实现 早期：手动完成 现在：链接器完成  应用大型应用程序开发过程中，将各个功能实现分解为更小更容易管理的模块当修改其中">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSAPP_Chapter7">
+<meta property="og:url" content="http://example.com/2024/06/01/CSAPP-Chapter7/index.html">
+<meta property="og:site_name" content="Vks🐱">
+<meta property="og:description" content="本文章是观看学习B站up九曲阑干大佬所记的笔记，下附大佬的B站主页链接：九曲阑干的个人空间-九曲阑干个人主页-哔哩哔哩视频 (bilibili.com) 链接 —— Linking引入概念链接是将各种代码和数据收集并组合成一个文件的过程，最终得到的文件可以被加载到内存执行 链接的实现 早期：手动完成 现在：链接器完成  应用大型应用程序开发过程中，将各个功能实现分解为更小更容易管理的模块当修改其中">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/VksAvatar.png">
+<meta property="article:published_time" content="2024-06-01T15:53:14.000Z">
+<meta property="article:modified_time" content="2024-07-15T11:55:51.854Z">
+<meta property="article:author" content="Vks">
+<meta property="article:tag" content="CSAPP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/VksAvatar.png"><link rel="shortcut icon" href="/img/Vksicon.png"><link rel="canonical" href="http://example.com/2024/06/01/CSAPP-Chapter7/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'CSAPP_Chapter7',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-07-15 19:55:51'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.2.0"></head><body><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><div class="loading-img" style="background-image:url(/img/VksAvatar.png);background-repeat: no-repeat;background-position:center;"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = 'hidden';
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+
+preloader.initLoading()
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (false) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><script>window.paceOptions = {
+  restartOnPushState: false
+}
+
+document.addEventListener('pjax:send', () => {
+  Pace.restart()
+})
+</script><link rel="stylesheet" href="/source/css/preload_change.css"/><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/VksAvatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">13</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Vks🐱"><span class="site-name">Vks🐱</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">CSAPP_Chapter7</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-06-01T15:53:14.000Z" title="发表于 2024-06-01 23:53:14">2024-06-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-07-15T11:55:51.854Z" title="更新于 2024-07-15 19:55:51">2024-07-15</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/CSAPP/">CSAPP</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="CSAPP_Chapter7"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>本文章是观看学习B站up九曲阑干大佬所记的笔记，下附大佬的B站主页链接：<br><a target="_blank" rel="noopener" href="https://space.bilibili.com/354767108?spm_id_from=333.337.0.0">九曲阑干的个人空间-九曲阑干个人主页-哔哩哔哩视频 (bilibili.com)</a></p>
+<h1 id="链接-——-Linking"><a href="#链接-——-Linking" class="headerlink" title="链接 —— Linking"></a>链接 —— Linking</h1><h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>链接是将各种代码和数据收集并组合成一个文件的过程，最终得到的文件可以被加载到内存执行</p>
+<h3 id="链接的实现"><a href="#链接的实现" class="headerlink" title="链接的实现"></a>链接的实现</h3><ul>
+<li>早期：手动完成</li>
+<li>现在：链接器完成</li>
+</ul>
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><p>大型应用程序开发过程中，将各个功能实现分解为更小更容易管理的模块<br>当修改其中的一个模块时，只需要重新编译修改后的模块，无需重新编译其他模块</p>
+<h3 id="学习原因"><a href="#学习原因" class="headerlink" title="学习原因"></a>学习原因</h3><h4 id="1-构建大型程序时"><a href="#1-构建大型程序时" class="headerlink" title="1. 构建大型程序时"></a>1. 构建大型程序时</h4><p>可能遇到缺少库文件或者版本不兼容导致的链接错误</p>
+<ul>
+<li>需要我们理解链接器是如何使用库文件来解析引用</li>
+</ul>
+<h4 id="2-避免一些难以发现的编程错误"><a href="#2-避免一些难以发现的编程错误" class="headerlink" title="2. 避免一些难以发现的编程错误"></a>2. 避免一些难以发现的编程错误</h4><h4 id="3-理解编程语言中的作用域规则"><a href="#3-理解编程语言中的作用域规则" class="headerlink" title="3. 理解编程语言中的作用域规则"></a>3. 理解编程语言中的作用域规则</h4><p>全局变量和局部变量的区别<br>static属性的实际意义</p>
+<h4 id="4-理解重要的系统概念"><a href="#4-理解重要的系统概念" class="headerlink" title="4. 理解重要的系统概念"></a>4. 理解重要的系统概念</h4><p>例如程序的加载和运行、虚拟内存、内存映射……</p>
+<h4 id="5-更好地利用共享库"><a href="#5-更好地利用共享库" class="headerlink" title="5. 更好地利用共享库"></a>5. 更好地利用共享库</h4><p>随着共享库和动态链接在现代操作系统中变得越来越重要，链接也逐渐变得复杂</p>
+<h2 id="具体示例"><a href="#具体示例" class="headerlink" title="具体示例"></a>具体示例</h2><p>![[CSAPPJQLG7-1.png]]</p>
+<p>![[CSAPPJQLG7-2.png]]</p>
+<ul>
+<li><p>输入该命令可得到可执行程序<code>prog</code></p>
+</li>
+<li><p><code>-Og</code>表示代码优化等级（告诉编译器生成的机器代码要符合原始C代码的结构，可以方便调试，实际使用中为了程序的性能会选择<code>-O1</code>或 <code>-O2</code>的优化选项)</p>
+</li>
+<li><p><code>-o prog</code>选项用来指定可执行文件的名字是prog （若不指明，默认可执行文件为a.out）</p>
+</li>
+</ul>
+<h2 id="生成可执行程序的过程"><a href="#生成可执行程序的过程" class="headerlink" title="生成可执行程序的过程"></a>生成可执行程序的过程</h2><h3 id="预处理"><a href="#预处理" class="headerlink" title="预处理"></a>预处理</h3><p><code>main.c</code> -&gt; <code>main.i</code></p>
+<p>![[CSAPPJQLG7-3.png]]</p>
+<ul>
+<li><code>cpp</code>指的是c预处理器</li>
+<li><code>cpp</code>或<code>gcc</code>这两条指令都可以使用</li>
+<li><code>-E</code>用来限制gcc只进行处理，不做编译、汇编、链接处理</li>
+<li><code>main.i</code>是一个ASCII码的中间文件</li>
+</ul>
+<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p><code>main.i</code> -&gt; <code>main.s</code></p>
+<p>![[CSAPPJQLG7-4.png]]</p>
+<ul>
+<li><code>c</code>指C编译器</li>
+<li><code>-S</code>表示只对文件进行编译，不做汇编和链接处理</li>
+</ul>
+<h3 id="汇编"><a href="#汇编" class="headerlink" title="汇编"></a>汇编</h3><p><code>main.s</code> -&gt; <code>main.o</code></p>
+<p>![[CSAPPJQLG7-5.png]]</p>
+<ul>
+<li>使用汇编器<code>as</code>将<code>main.s</code>翻译成一个可重定位目标文件文件main.o</li>
+<li><code>sum.o</code>获得过程与<code>main.o</code>类似</li>
+</ul>
+<h3 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h3><p>使用链接器ld构建可执行文件</p>
+<p>链接所需要的文件如下：<br>![[CSAPPJQLG7-6.png]]</p>
+<ul>
+<li><code>crt</code> : <code>c runtime</code></li>
+<li>链接就是将这些文件打包成一个可执行文件</li>
+</ul>
+<p>手动连接的命令如图<br>![[CSAPPJQLG7-7.png]]</p>
+<ul>
+<li><code>ld</code>表示链接器</li>
+<li><code>-static</code>表示采用静态链接的方式</li>
+</ul>
+<h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><ul>
+<li>在shell中输入<code>./prog</code></li>
+<li>shell调用操作系统中的加载器(loader)函数来实现</li>
+<li>加载器将可执行文件prog的代码和数据复制到内存中,并将cup的控制权转移到<code>prog</code>的程序开头,随后程序开始运行</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><strong>链接就是将可重定位目标文件和必要的系统文件组合起来,生成一个可执行目标文件的操作</strong></p>
+<h1 id="可重定位目标文件-——-Relocatable-Object-Files"><a href="#可重定位目标文件-——-Relocatable-Object-Files" class="headerlink" title="可重定位目标文件 —— Relocatable Object Files"></a>可重定位目标文件 —— Relocatable Object Files</h1><h2 id="代码引入"><a href="#代码引入" class="headerlink" title="代码引入"></a>代码引入</h2><p><code>main.c</code>:<br>![[CSAPPJQLG7-8.png]]</p>
+<ul>
+<li>使用gcc将代码文件翻译成可重定位目标文件</li>
+<li><code>-c</code>表示编译和汇编但是不链接</li>
+<li>使用<code>wc</code>（Word Count）命令查看<code>main.o</code>的大小,<code>-c</code>表示查看有多少个字节<br>![[CSAPPJQLG7-9.png]]</li>
+</ul>
+<h2 id="可执行目标文件"><a href="#可执行目标文件" class="headerlink" title="可执行目标文件"></a>可执行目标文件</h2><h3 id="组成部分"><a href="#组成部分" class="headerlink" title="组成部分"></a>组成部分</h3><ul>
+<li>ELF header</li>
+<li>Sections</li>
+<li>Section header table<br>![[CSAPPJQLG7-10.png]]</li>
+</ul>
+<h2 id="ELF-header"><a href="#ELF-header" class="headerlink" title="ELF header"></a>ELF header</h2><ul>
+<li>readlf是linux系统提供的工具</li>
+<li><code>-h</code>选项表示只显示header信息<br>![[CSAPPJQLG7-11.png]]</li>
+</ul>
+<h3 id="开头16字节"><a href="#开头16字节" class="headerlink" title="开头16字节"></a>开头16字节</h3><p>![[CSAPPJQLG7-12.png]]</p>
+<h4 id="开始4字节"><a href="#开始4字节" class="headerlink" title="开始4字节"></a>开始4字节</h4><ul>
+<li>被称为ELF的魔术(ELF Magic)</li>
+<li><strong>魔术</strong>：用来确认文件类型（操作系统加载可执行文件时会确认魔术是否正确，如果不正确则拒绝加载）</li>
+</ul>
+<h4 id="第5字节"><a href="#第5字节" class="headerlink" title="第5字节"></a>第5字节</h4><ul>
+<li>表示ELF文件类型</li>
+<li>0x1 表示32位</li>
+<li>0x1 表示64位</li>
+</ul>
+<h4 id="第6字节"><a href="#第6字节" class="headerlink" title="第6字节"></a>第6字节</h4><ul>
+<li>表示字节序</li>
+<li>0x1表示小端法</li>
+<li>0x2表示大端法</li>
+</ul>
+<h4 id="第7字节"><a href="#第7字节" class="headerlink" title="第7字节"></a>第7字节</h4><ul>
+<li>表示ELF的版本号，通常为1</li>
+</ul>
+<h4 id="后9个字节"><a href="#后9个字节" class="headerlink" title="后9个字节"></a>后9个字节</h4><ul>
+<li>ELF标准中没有定义，用0填充</li>
+</ul>
+<h3 id="Type"><a href="#Type" class="headerlink" title="Type"></a>Type</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Type:                                        REL(Relocatable file)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>表示文件为可重定位目标文件</li>
+<li>还有两种类型：可执行文件、共享文件</li>
+</ul>
+<h3 id="Size-of-this-header"><a href="#Size-of-this-header" class="headerlink" title="Size of this header"></a>Size of this header</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Size of this header:                         64(bytes)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>根据此信息可以推测中section在elf文件中的起始位置为0x40</li>
+</ul>
+<h3 id="Section-header-table-的信息"><a href="#Section-header-table-的信息" class="headerlink" title="Section header table 的信息"></a>Section header table 的信息</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Start of section header:                            1064(bytes into file )</span><br><span class="line">Size of section headers:                            64(bytes)</span><br><span class="line">Number of section header:                           13</span><br></pre></td></tr></table></figure>
+<ul>
+<li>section headers的起始地址为1064</li>
+<li>该表一共包含13个表项</li>
+<li>每个表项共包含64个字节</li>
+<li>可计算出Section header table的大小为$13*64&#x3D;832$ 个字节</li>
+</ul>
+<h3 id="ELF文件大小"><a href="#ELF文件大小" class="headerlink" title="ELF文件大小"></a>ELF文件大小</h3><p>![[CSAPPJQLG7-13.png]]</p>
+<h2 id="section-header-table"><a href="#section-header-table" class="headerlink" title="section header table"></a>section header table</h2><ul>
+<li><code>-S</code>表示打印整个表的信息<br>![[CSAPPJQLG7-14.png]] </li>
+<li>共有13个表</li>
+<li><code>Offset</code>表示每个表的起始位置, <code>Size</code>表示表的大小, 根据这两个信息就可以确定每个表在整个ELF中的位置<br>![[CSAPPJQLG7-15.png]]</li>
+</ul>
+<h3 id="text"><a href="#text" class="headerlink" title=".text"></a>.text</h3><ul>
+<li>该部分存放的是已经编译好的机器代码</li>
+<li>查看已编译好的机器代码需要使用反汇编工具<strong>objdump</strong>, 命令如下<br>![[CSAPPJQLG7-16.png]]<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0000 554889e5 4883ec10 ……</span><br></pre></td></tr></table></figure></li>
+<li>左边为指令地址（0000）, 右边是这部分具体的机器指令（554889e5 4883ec10 ……）</li>
+<li>每个字节所对应的汇编代码也可以通过反汇编得到<br>![[CSAPPJQLG7-17.png]]</li>
+</ul>
+<h3 id="data"><a href="#data" class="headerlink" title=".data"></a>.data</h3><ul>
+<li><code>.data section</code>用来存放已初始化的全局变量和静态变量的值</li>
+</ul>
+<h3 id="bss"><a href="#bss" class="headerlink" title=".bss"></a>.bss</h3><h4 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h4><ul>
+<li><code>.bss section</code>中存储未初始化的全局变量和静态变量</li>
+<li>被初始化为0的全局和静态变量也被存放在bss中</li>
+</ul>
+<h4 id="data-bss"><a href="#data-bss" class="headerlink" title=".data &amp; .bss"></a>.data &amp; .bss</h4><ul>
+<li>区分方法，将bss理解为Better Save Space</li>
+<li><strong>局部变量既不在data中，也不再bss中</strong></li>
+</ul>
+<h4 id="观察到的问题"><a href="#观察到的问题" class="headerlink" title="观察到的问题"></a>观察到的问题</h4><p>![[CSAPPJQLG7-18.png]]</p>
+<ol>
+<li><code>.bss</code>的起始地址与<code>.rodata</code>一致</li>
+<li>此处<code>.bss</code>的大小为4字节, 但程序中全局变量value和静态变量b的大小总共应为8字节, 大小不匹配</li>
+</ol>
+<h4 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h4><ul>
+<li><strong><code>.bss</code>实际上并不占用空间,仅是占位符</strong></li>
+<li>区分已初始化和未初始化的变量是为了节省空间, 程序运行时会在内存中分配这些变量并把其初始值设为0</li>
+</ul>
+<h3 id="rodata"><a href="#rodata" class="headerlink" title=".rodata"></a>.rodata</h3><ul>
+<li><code>rodata</code>（read only）用来存放只读数据（printf语句格式串，switch语句跳转表……）</li>
+</ul>
+<h3 id="其余sections"><a href="#其余sections" class="headerlink" title="其余sections"></a>其余sections</h3><p>![[CSAPPJQLG7-19.png]]</p>
+<h1 id="符号与符号表"><a href="#符号与符号表" class="headerlink" title="符号与符号表"></a>符号与符号表</h1><h2 id="引入-1"><a href="#引入-1" class="headerlink" title="引入"></a>引入</h2><pre><code>链接的本质就是把不同的文件粘合在一起，为了是这些文件能相互粘合，这些目标文件之间必须有固定的规则才行，我们可以将符号看作是链接中的粘合剂，整个链接过程正是基于符号才能完成
+</code></pre>
+<h2 id="symtab"><a href="#symtab" class="headerlink" title=".symtab"></a>.symtab</h2><p>每一个ELF文件都有一个符号表，该符号表包含该模块定义和引用的符号信息<br>![[CSAPPJQLG7-20.png]]<br>![[CSAPPJQLG7-21.png]]</p>
+<h3 id="列表说明"><a href="#列表说明" class="headerlink" title="列表说明"></a>列表说明</h3><ul>
+<li>Value(hex)：表示相对于所在section起始位置的偏移量</li>
+<li>Size：所占字节数</li>
+<li>Type：</li>
+<li>Bind：</li>
+<li>Vis：</li>
+<li>Ndx：表示的是section的索引值，可以通过查看section header table来确定</li>
+<li>Name：符号名</li>
+</ul>
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><h4 id="main-func"><a href="#main-func" class="headerlink" title="main &amp; func"></a>main &amp; func</h4><ul>
+<li>main和func是两个函数，其<code>Type</code>为<code>FUNC</code></li>
+<li>两函数全局可见，其<code>Bind</code>(binding)字段也是全局</li>
+<li>所在位置为<code>.text</code>，其<code>Ndx</code>为1</li>
+</ul>
+<h4 id="printf"><a href="#printf" class="headerlink" title="printf"></a>printf</h4><ul>
+<li>在源文件中只是被引用，定义不再<code>main.c</code>中，所以其Ndx为UND（undefined）</li>
+</ul>
+<h3 id="全局变量"><a href="#全局变量" class="headerlink" title="全局变量"></a>全局变量</h3><h4 id="count-value"><a href="#count-value" class="headerlink" title="count &amp; value"></a>count &amp; value</h4><ul>
+<li><code>Type</code>为<code>Object</code>，表示符号为数据对象</li>
+<li><code>Ndx</code>值不同（count经过初始化，在<code>.data</code>中，value没有被初始化，在<code>.common</code>中）</li>
+<li><code>Bind</code>均为<code>GLOBAL</code></li>
+</ul>
+<h5 id="Common"><a href="#Common" class="headerlink" title="Common"></a>Common</h5><ul>
+<li><code>COMMON</code>：存放未初始化的全局变量</li>
+<li><code>.bss</code>：存放未初始化的静态变量，初始化为0的全局或静态变量</li>
+</ul>
+<h3 id="局部静态变量"><a href="#局部静态变量" class="headerlink" title="局部静态变量"></a>局部静态变量</h3><h4 id="a-b"><a href="#a-b" class="headerlink" title="a &amp; b"></a>a &amp; b</h4><ul>
+<li><code>Type</code>为<code>Object</code>，表示符号为数据对象</li>
+<li><code>Ndx</code>值不同（a经过初始化，在<code>.data</code>中，b被初始化为0，在<code>.bss</code>中）</li>
+<li><code>Bind</code>均为<code>LOCAL</code></li>
+<li><code>Name</code>变为了a.2254和b.2255 ，这种处理方式被称为<strong>名称修饰</strong>，防止静态变量的名字冲突</li>
+</ul>
+<h3 id="符号名无显式表项"><a href="#符号名无显式表项" class="headerlink" title="符号名无显式表项"></a>符号名无显式表项</h3><ul>
+<li>这些符号的符号名就是他们section的名称</li>
+<li>例如<code>Ndx</code>为1但无符号名的符号，其符号名实际上就是<code>.text</code></li>
+</ul>
+<h3 id="局部变量"><a href="#局部变量" class="headerlink" title="局部变量"></a>局部变量</h3><ul>
+<li>局部变量x并没有出现在符号表中</li>
+<li>局部变量在运行时被中被管理，链接器对此类符号并不感兴趣，所以局部变量的信息不会出现在符号表中</li>
+</ul>
+<h2 id="Symbol"><a href="#Symbol" class="headerlink" title="Symbol"></a>Symbol</h2><p>在链接器的上下文中，有三种不同的符号</p>
+<h3 id="Global-Symbols-全局符号"><a href="#Global-Symbols-全局符号" class="headerlink" title="Global Symbols(全局符号)"></a>Global Symbols(全局符号)</h3><ul>
+<li>被该模块定义同时能被其他模块引用的全局符号</li>
+</ul>
+<h3 id="Externals-Symbols-外部符号"><a href="#Externals-Symbols-外部符号" class="headerlink" title="Externals Symbols(外部符号)"></a>Externals Symbols(外部符号)</h3><ul>
+<li>被其他模块定义同时能被该模块引用的全局符号</li>
+</ul>
+<h3 id="Local-Symbols-局部符号"><a href="#Local-Symbols-局部符号" class="headerlink" title="Local Symbols(局部符号)"></a>Local Symbols(局部符号)</h3><ul>
+<li>只能被该模块定义和引用的局部符号</li>
+</ul>
+<h2 id="static"><a href="#static" class="headerlink" title="static"></a>static</h2><ul>
+<li>区别局部符号和全局符号的关键是static属性</li>
+<li>带有static属性的函数以及变量是不能被其他模块引用的</li>
+<li>对于c语言来说，static属性的功能就是隐藏模块内部的变量以及函数声明，任何带有static属性声明的全局变量或者函数都是模块私有的，也就是说任何不带static属性声明的全局变量或者函数都是公共的</li>
+</ul>
+<h1 id="符号解析和静态库（Static-Library"><a href="#符号解析和静态库（Static-Library" class="headerlink" title="符号解析和静态库（Static Library)"></a>符号解析和静态库（Static Library)</h1><h2 id="符号解析"><a href="#符号解析" class="headerlink" title="符号解析"></a>符号解析</h2><p>符号解析会面临两个问题</p>
+<ol>
+<li>找不到符号的定义</li>
+<li>找到了符号的多个定义</li>
+</ol>
+<h3 id="找不到符号定义"><a href="#找不到符号定义" class="headerlink" title="找不到符号定义"></a>找不到符号定义</h3><p>下面是代码示例:<br>![[CSAPPJQLG7-22.png]]</p>
+<ul>
+<li>图中代码仅对函数foo进行了声明，并且调用了foo</li>
+<li>该代码文件可以被编译和汇编，因为当编译器遇到一个不是在当前模块定义的符号时，它会假设该符号是在其他某个模块中定义的，并且可以在符号表中看到汇编器为它生成了相应的符号</li>
+<li>但在链接生成可执行文件时，链接器在其他输入模块中找不到这个被引用符号的定义，链接器就会输出错误信息终止链接操作<br>![[CSAPPJQLG7-23.png]]</li>
+</ul>
+<h3 id="Strong-symbols-强符号-Weak-symbols-弱符号"><a href="#Strong-symbols-强符号-Weak-symbols-弱符号" class="headerlink" title="Strong symbols(强符号) &amp; Weak symbols(弱符号)"></a>Strong symbols(强符号) &amp; Weak symbols(弱符号)</h3><p>在编译时，编译器向汇编器输出每个全局符号，或是强符号或是弱符号，接下来汇编器把这个强弱信息隐含地编码在符号表中</p>
+<ul>
+<li><strong>强符号</strong>：函数和已初始化的全局变量</li>
+<li><strong>弱符号</strong>：未初始化的全局变量</li>
+</ul>
+<h4 id="static-1"><a href="#static-1" class="headerlink" title="static"></a>static</h4><p>以下内容来自GPT-4o</p>
+<hr>
+<p>在C语言中，<code>static</code> 关键字用于限制变量或函数的作用域。在不同的上下文中，<code>static</code> 的作用有所不同，具体来说：</p>
+<h5 id="1-局部变量"><a href="#1-局部变量" class="headerlink" title="1. 局部变量"></a>1. <strong>局部变量</strong></h5><p>当在函数内部使用 <code>static</code> 修饰变量时，这个变量的作用域仅限于该函数，但其生命周期延续整个程序运行期间。每次调用该函数时，<code>static</code> 变量不会重新分配内存，而是保留上次调用的值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">func</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">static</span> <span class="type">int</span> local_var = <span class="number">0</span>; <span class="comment">// 局部静态变量</span></span><br><span class="line">    local_var++;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, local_var);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这种情况下，<code>local_var</code> 不是强符号也不是弱符号，因为它是局部变量，不会出现在符号表中。</p>
+<h5 id="2-全局变量"><a href="#2-全局变量" class="headerlink" title="2. 全局变量"></a>2. <strong>全局变量</strong></h5><p>当在文件作用域（即函数外部）使用 <code>static</code> 修饰变量时，这个变量的作用域仅限于该文件（编译单元）。这意味着其他文件无法直接访问该变量。此时，<code>static</code> 修饰的全局变量不会被当作强符号或弱符号导出给链接器。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> file_var = <span class="number">0</span>; <span class="comment">// 文件静态变量</span></span><br></pre></td></tr></table></figure>
+
+<p>在这种情况下，<code>file_var</code> 是一个内部链接的符号，不会被导出到其他编译单元。因此，它既不是强符号也不是弱符号。</p>
+<h5 id="3-函数"><a href="#3-函数" class="headerlink" title="3. 函数"></a>3. <strong>函数</strong></h5><p>当使用 <code>static</code> 修饰函数时，这个函数的作用域仅限于定义它的文件（编译单元）。这使得该函数在其他文件中不可见，类似于文件静态变量的情况。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">file_func</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 文件静态函数</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同样，<code>file_func</code> 也是一个内部链接的符号，不会被导出，因此它既不是强符号也不是弱符号。</p>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><p><code>static</code> 修饰的变量或函数都具有内部链接属性，限制其作用域在定义它的文件（编译单元）内。这意味着它们不会被导出为强符号或弱符号供链接器使用。以下是 <code>static</code> 的几个关键点：</p>
+<ol>
+<li><strong>局部静态变量</strong>：仅限于函数内部，不出现在符号表中。</li>
+<li><strong>文件静态变量</strong>：仅限于文件内部，不导出为强符号或弱符号。</li>
+<li><strong>文件静态函数</strong>：仅限于文件内部，不导出为强符号或弱符号。</li>
+</ol>
+<p>因此，被 <code>static</code> 修饰的变量或函数不会被链接器处理为强符号或弱符号。</p>
+<hr>
+<h3 id="链接器的符号解析规则（如何解析多重定义的符号）"><a href="#链接器的符号解析规则（如何解析多重定义的符号）" class="headerlink" title="链接器的符号解析规则（如何解析多重定义的符号）"></a>链接器的符号解析规则（如何解析多重定义的符号）</h3><h4 id="多个同名的强符号一起出现"><a href="#多个同名的强符号一起出现" class="headerlink" title="多个同名的强符号一起出现"></a>多个同名的强符号一起出现</h4><p><strong>链接器不允许有多个同名的强符号一起出现</strong>，每个强符号只能被定义一次，否则链接器会报错</p>
+<ul>
+<li>多个相同函数名的函数<br>![[CSAPPJQLG7-24.png]]</li>
+<li>具有相同的已初始化的全局变量名<br>![[CSAPPJQLG7-25.png]]</li>
+</ul>
+<h4 id="一个强符号和多个同名弱符号一起出现"><a href="#一个强符号和多个同名弱符号一起出现" class="headerlink" title="一个强符号和多个同名弱符号一起出现"></a>一个强符号和多个同名弱符号一起出现</h4><p><strong>如果有一个强符号和多个弱符号，选择强符号</strong>，对弱符号的引用会被解析成强符号</p>
+<p>![[CSAPPJQLG7-26.png]]</p>
+<ul>
+<li>bar3.c中的x并未被初始化，属于弱符号；foo3.c中的x被初始化，属于强符号</li>
+<li>编译器会选择在foo3.c中定义的强符号，此时编译器可以生成可执行文件，不会报错或警告</li>
+</ul>
+<h4 id="多个弱符号一起出现"><a href="#多个弱符号一起出现" class="headerlink" title="多个弱符号一起出现"></a>多个弱符号一起出现</h4><p><strong>如果有多个弱符号，任意选择一个</strong><br>为了避免任意选择一个所带来的难以发现且危险的错误，可以<strong>在编译时添加<code>-fno-common</code>的编译选项来覆盖这条规则</strong>，即<code>gcc -fno-common</code>(现在已经成为了默认选项)<br>该选项会告诉编译器，当遇到多重定义的全局符号是，触发一个错误<br>（<code>-Werror</code>选项会把所有的警告都变为错误）</p>
+<p>![[CSAPPJQLG7-27.png]]</p>
+<p>当同名若符号类型不同时，会出现很难被改成的错误：<br>![[CSAPPJQLG7-28.png]]</p>
+<p>![[CSAPPJQLG7-29.png]]</p>
+<h2 id="静态库"><a href="#静态库" class="headerlink" title="静态库"></a>静态库</h2><h3 id="概念-1"><a href="#概念-1" class="headerlink" title="概念"></a>概念</h3><ul>
+<li>在linux系统中，静态库以一种称为archive的特殊文件格式(.a)存放在磁盘上 </li>
+<li>archive文件是一组可重定位目标文件的集合</li>
+</ul>
+<p>静态库 (.a 存档文件)  </p>
+<ul>
+<li>将一些相关联的可重定位目标文件连接成一个带索引的文件（称为<br>档案 archive）  </li>
+<li>改进链接器，使它可以在一个或多个档案文件中寻找符号，以解析<br>未被解析的外部引用  </li>
+<li>如果某个档案文件能够解析某个引用，就将它链接到可执行文件中</li>
+</ul>
+<h3 id="构造静态库"><a href="#构造静态库" class="headerlink" title="构造静态库"></a>构造静态库</h3><p>![[CSAPPJQLG7-30.png]]</p>
+<p>![[CSAPPJQLG7-31.png]]</p>
+<h3 id="静态库的使用"><a href="#静态库的使用" class="headerlink" title="静态库的使用"></a>静态库的使用</h3><p>![[CSAPPJQLG7-32.png]]</p>
+<p>![[CSAPPJQLG7-33.png]]</p>
+<h3 id="具体的链接过程"><a href="#具体的链接过程" class="headerlink" title="具体的链接过程"></a>具体的链接过程</h3><ul>
+<li>当链接器运行时，它确定<code>main.o</code>中引用了<code>addvec.o</code>中定义的<code>addvec</code>符号</li>
+<li>所以链接器从<code>libvector.a</code>中复制<code>addvec.o</code>到可执行文件</li>
+<li>因为程序中没有用到<code>multvec.o</code>中定义的符号，所以链接器就不会将这个模块复制到可执行文件</li>
+<li>除此之外，链接器还会从libc.a中复制printf.o模块以及其他C runtime所需的模块</li>
+</ul>
+<h2 id="补充部分"><a href="#补充部分" class="headerlink" title="补充部分"></a>补充部分</h2><p>一下内容源自WHU提供的翻译后的CMU的ppt<br>![[CSAPPJQLG7-34.png]]<br>![[CSAPPJQLG7-35.png]]<br>![[CSAPPJQLG7-36.png]]</p>
+<h1 id="静态库的解析过程-——-Static-Linking"><a href="#静态库的解析过程-——-Static-Linking" class="headerlink" title="静态库的解析过程  —— Static Linking"></a>静态库的解析过程  —— Static Linking</h1><h2 id="符号解析阶段"><a href="#符号解析阶段" class="headerlink" title="符号解析阶段"></a>符号解析阶段</h2><p><strong>链接器从左到右按照命令行中出现的顺序来扫描可重定位文件和静态库文件</strong></p>
+<p>e.g.<br><code>linux&gt; gcc -static -o prog main.o ./libvector.a</code><br>对上述指令，链接器先处理main.o，在处理libvector.a，最后处理libc.a (编译器驱动程序总是会把libc.a传给链接器，所以命令中无需显示的引用libc.a)</p>
+<p><strong>扫描过程中，链接器一共维护了三个集合</strong></p>
+<ol>
+<li><strong>集合E：在链接器扫描的过程中发现了可重定位目标文件就会放到这个集合中，在链接即将完成时，这个集合中的文件最终会被合并起来形成可执行文件</strong></li>
+<li><strong>集合U：链接器会把引用了但是尚未定义的符号放在这个集合里</strong></li>
+<li><strong>集合D：它用来存放输入文件中已定义的符号</strong></li>
+</ol>
+<p><strong>链接开始时，这三个集合均为空</strong><br><strong>对于命令行上的每一个输入文件f，链接器都会判断其为目标文件还是静态库文件</strong></p>
+<p><strong>如果f为目标文件，那么链接器把f添加到集合E中，同时修改集合U和D来反应f中的符号定义和引用</strong><br>e.g.<br>对于main.o文件，将其添加到集合E中，并且把尚未定义的符号<code>addvec</code>和<code>printf</code>加入集合U中，把已定义的符号<code>x y z main</code>放入集合D中<br>![[CSAPPJQLG7-37.png]]</p>
+<p><strong>如果f为静态库文件，那么链接器就尝试在这个静态库文件中寻找集合U中未解析的符号</strong></p>
+<p>e.g.<br>当链接器发现成员<code>addvector.o</code>中存在未定义的符号<code>addvec</code>的定义，此时就把<code>addvector.o</code>添加到集合E中，然后将集合U中的符号<code>addvec</code>删除。<br>如果<code>addvector.o</code>中还定义了其他的符号，则还要添加到集合D中，所以<code>addcnt</code>也要被添加到集合D中<br>![[CSAPPJQLG7-38.png]]</p>
+<ul>
+<li><strong>对于静态库文件中的所有成员目标文件，都要依次进行上述处理过程，直到集合U和集合D不再发生变化</strong></li>
+<li><strong>此时，任何不包含在集合E中的成员目标文件都被简单的丢弃</strong></li>
+</ul>
+<p>e.g.<br>最后链接器扫描<code>libc.a</code>文件，<code>printf.o</code>被加入集合E，集合U中的printf被删除<br>![[CSAPPJQLG7-39.png]]</p>
+<p><strong>完成对所有输入文件的扫描后：</strong></p>
+<ul>
+<li><strong>如果集合U为空，链接器会合并集合E中的文件来生成可执行文件</strong></li>
+<li><strong>如果集合U是非空的，那就说明程序中使用了未定义的符号，此时链接器输出一个错误并终止</strong></li>
+</ul>
+<h2 id="存在的问题"><a href="#存在的问题" class="headerlink" title="存在的问题"></a>存在的问题</h2><p><strong>命令行上的目标文件和库文件的输入顺序非常重要</strong></p>
+<p>e.g.<br>交换<code>libvector.a</code>和<code>main.o</code>，当链接器处理<code>libvector.a</code>时，集合U是空的，所以没有<code>libvector.a</code>中的成员会被添加到集合E中<br>接下来再处理<code>main.o</code>，<code>addvec</code>则会被添加到集合U中，所以对<code>addvec</code>的引用不会被解析<br>最终链接器会产生错误信息并终止<br>![[CSAPPJQLG7-40.png]]</p>
+<p><strong>通常情况下，关于库的一般使用准则就是将它们放在命令行的结尾：</strong></p>
+<ul>
+<li><strong>如果各个库的成员是相互独立的（不同库的成员没有相互引用）：这些库可以按照任意的顺序可以按照任意顺序放置到命令行的结尾处</strong></li>
+<li><strong>如果库不是独立的，就必须对他们进行排序，以保证符号能被正常解析</strong></li>
+</ul>
+<p>e.g.<br>![[CSAPPJQLG7-41.png]]</p>
+<ul>
+<li>case1：<code>liby.a</code>必须出现在<code>libx.a</code>和<code>libz.a</code>之后</li>
+<li>case2：<strong>库之间直接存在相互引用，那么库文件可以重复出现</strong>（另一种解决方法就是将<code>libx.a</code>和<code>liby.a</code>合并成一个静态库文件</li>
+</ul>
+<h2 id="静态库的明显缺点"><a href="#静态库的明显缺点" class="headerlink" title="静态库的明显缺点"></a>静态库的明显缺点</h2><ol>
+<li>需要定期维护和更新<br> 也就是说，如果有个开发人员需要使用这个静态库，他就必须以某种方式获取到该库的更新情况，然后将更新后的静态库与他们编写的程序重新进行连接，这样程序才能使用到最新版的静态库</li>
+<li>几乎每个C程序都要使用标准的I&#x2F;O函数<br> 在运行时，这些函数的代码会被复制到每个进程的代码段中，对于一个运行了成百上千个进程的系统，这种方式对于内存资源来说是一种极大的浪费</li>
+</ol>
+<p>![[CSAPPJQLG7-42.png]]</p>
+<h1 id="重定位-——-Relocation"><a href="#重定位-——-Relocation" class="headerlink" title="重定位 —— Relocation"></a>重定位 —— Relocation</h1><h2 id="引入-2"><a href="#引入-2" class="headerlink" title="引入"></a>引入</h2><p>当链接器把代码中的符号引用和对应的符号定义关联起来之后，链接器就可以确定将哪些目标文件进行合并了，同时，链接器也获得了这些目标文件的代码节和数据节的大小信息，接下来就开始进行重定位的操作</p>
+<h2 id="重定位的过程"><a href="#重定位的过程" class="headerlink" title="重定位的过程"></a>重定位的过程</h2><p>该过程中，链接器合并输入模块，并为每个符号分配运行时地址，具体过程分为两步：</p>
+<ol>
+<li>Relocating sections and symbol definitions（重定位节和符号定义）</li>
+<li>Reloacting symbol references within sections（重定位符号引用）</li>
+</ol>
+<h3 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h3><p>![[CSAPPJQLG7-43.png]]</p>
+<h4 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h4><p>链接器把<code>main.o</code>和<code>sum.o</code>中<strong>所有相同类型的section合并为一个新的section</strong><br>![CSAPPJQLG7-44.png]]</p>
+<p>例如图中新合成的<code>.text</code>就是可执行文件的text section<br>合成前，<code>main.o</code>和<code>sum.o</code>中的<code>.text</code>都是从0开始的<br>书中假定合成后的<code>.text</code>起始地址是0x4004d0，原因是在64位的linux系统中，ELF可执行文件默认从地址0x400000处开始分配，由于ELF的header和text section之前还有一些其他的信息，所以假定text section从4004d0处开始</p>
+<p><strong>这一步完成之后程序中每条指令和全局变量都有了唯一的运行时内存地址</strong></p>
+<h4 id="第二步"><a href="#第二步" class="headerlink" title="第二步"></a>第二步</h4><p>例如<code>main</code>中调用了函数<code>sum</code>，但如图所示，call的目的地址是0<br>![[CSAPPJQLG7-45.png]]<br>显然这并非是<code>sum</code>真正的地址，<strong>所以在这一步中链接器需要修改对符号<code>sum</code>的引用，使其指向正确的运行地址</strong></p>
+<p>执行这一步，链接器需要依赖于<strong>可重定位条目的数据结构</strong></p>
+<h2 id="Relocation-Entries（重定位条目）"><a href="#Relocation-Entries（重定位条目）" class="headerlink" title="Relocation Entries（重定位条目）"></a>Relocation Entries（重定位条目）</h2><h3 id="概念-2"><a href="#概念-2" class="headerlink" title="概念"></a>概念</h3><p>当汇编器在生成可重定位目标文件时，并不知道数据和代码最终放在内存的什么位置，也不知道该模块所引用的外部定义的函数以及全局变量的位置<br>所以，当<strong>汇编器遇到最终位置不确定的符号引用时，它就会产生一个重定位条目</strong></p>
+<h3 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h3><p>用来告诉链接器在合成可执行文件时应该如何修改这个引用</p>
+<h3 id="位置"><a href="#位置" class="headerlink" title="位置"></a>位置</h3><ul>
+<li>对于代码的重定位条目放在<code>.rel.text</code>中</li>
+<li>对于已初始化数据的重定位条目放在<code>.rel.data</code>中</li>
+</ul>
+<h3 id="结构体定义"><a href="#结构体定义" class="headerlink" title="结构体定义"></a>结构体定义</h3><p>![[CSAPPJQLG7-46.png]]</p>
+<ul>
+<li>offset：表示被修改的引用的节偏移量</li>
+<li>type：重定位类型。链接器根据type修改新的引用</li>
+<li>symbol：表示被修改的引用是哪一个符号</li>
+<li>addend：是一个常数，一些类型的重定位要使用它对被应用的值做偏移调整</li>
+</ul>
+<h4 id="重定位类型（type）"><a href="#重定位类型（type）" class="headerlink" title="重定位类型（type）"></a>重定位类型（type）</h4><p>ELF中定义了32中不同的重定位类型，重点有以下两种</p>
+<ol>
+<li>R_X86_64_PC32（PC 相对地址）</li>
+<li>R_X86_64_32（绝对地址）</li>
+</ol>
+<h2 id="链接器如何使用重定位条目进行重定位"><a href="#链接器如何使用重定位条目进行重定位" class="headerlink" title="链接器如何使用重定位条目进行重定位"></a>链接器如何使用重定位条目进行重定位</h2><p>本例中，汇编器产生了两个重定位条目<br>![[CSAPPJQLG7-47.png]]</p>
+<h3 id="重定位相对引用-（以sum为例）"><a href="#重定位相对引用-（以sum为例）" class="headerlink" title="重定位相对引用 （以sum为例）"></a>重定位相对引用 （以sum为例）</h3><p>![[CSAPPJQLG7-48.png]]</p>
+<ul>
+<li><code>0xe8</code>表示指令call的操作码</li>
+<li>重定位前，操作码后的内容被汇编器填充为0</li>
+</ul>
+<p>![[CSAPPJQLG7-49.png]]</p>
+<ul>
+<li>链接器根据sum的重定位条目来确定被填充部分的具体内容<ol>
+<li>链接器根据重定位条目计算出引用的运行时地址：通过函数main的起始地址（在重定位的第一步可以得到，假设是0x4004d0）与重定位条目中的偏移量字段相加（得到结果0x4004df）</li>
+<li>更新这个符号引用，使得它在运行时指向sum函数，其计算方法：用sum的起始地址（假设为0x4004e8）减去计算得到的运行时地址，然后加上addend字段（默认为-4）做一下修正</li>
+</ol>
+</li>
+</ul>
+<p>![[CSAPPJQLG7-50.png]]<br>经过计算，在最终的可执行程序中，call指令的形式如上图</p>
+<ul>
+<li>call指令的地址在<code>0x4004de</code>处</li>
+<li>CPU执行call指令时，PC(正在执行指令的下一条指令的地址)的值为0x4004e3</li>
+<li>call的执行分为两步：<ol>
+<li>CPU将PC的值压入栈中（函数调用后要接着执行下面的add指令）</li>
+<li>修改PC的值，修改方式为：PC当前值加上偏移量（根据上述计算，偏移量为0x5)</li>
+</ol>
+</li>
+<li>PC的值加上0x5刚好为0x4004e8，就是函数sum的第一条指令</li>
+</ul>
+<h3 id="重定位绝对引用（以array为例）"><a href="#重定位绝对引用（以array为例）" class="headerlink" title="重定位绝对引用（以array为例）"></a>重定位绝对引用（以array为例）</h3><p>![[CSAPPJQLG7-51.png]]</p>
+<ul>
+<li>offset字段告诉编译器要从偏移量0xa（相对于main函数地址的偏移量）开始修改</li>
+<li>addend字段默认为0</li>
+</ul>
+<p>假设链接器已经确认array所在的data section位于0x601018处<br>![[CSAPPJQLG7-52.png]]  ![[CSAPPJQLG7-53.png]]</p>
+<h3 id="完成重定位"><a href="#完成重定位" class="headerlink" title="完成重定位"></a>完成重定位</h3><p>![[CSAPPJQLG7-54.png]]</p>
+<p>当程序执行加载的时候，加载器会把这些section中的字节直接复制到内存里，不用执行任何修改就可以执行</p>
+<h1 id="可执行目标文件（Executable-Object-Files）"><a href="#可执行目标文件（Executable-Object-Files）" class="headerlink" title="可执行目标文件（Executable Object Files）"></a>可执行目标文件（Executable Object Files）</h1><h2 id="文件格式"><a href="#文件格式" class="headerlink" title="文件格式"></a>文件格式</h2><p>![[CSAPPJQLG7-55.png]]</p>
+<ul>
+<li>左侧为可执行文件的格式</li>
+<li>右侧为可重定位目标文件的格式</li>
+<li>ELF header：描述文件的总体格式，其中有一项是程序的入口，也就是程序运行时要执行的第一条指令的地址</li>
+<li><code>.init</code>节定义了一个名为_init的函数，代码会调用这个函数进行初始化</li>
+<li><code>.text</code> <code>.rodata</code> <code>.data</code>中与可重定位目标文件的节是类似的，不过它们已经被重定位到最终的运行时内存地址上，因此，可执行文件中不再需要<code>.rel</code>文件</li>
+</ul>
+<p>程序运行时，可执行文件代码段和数据段会被加载到内存执行，还有一部分不会被加载到内存（例如符号表和调试信息等）<br>![[CSAPPJQLG7-56.png]]</p>
+<h2 id="程序头部表（Program-Header-Table"><a href="#程序头部表（Program-Header-Table" class="headerlink" title="程序头部表（Program Header Table)"></a>程序头部表（Program Header Table)</h2><ul>
+<li>程序头部表中描述了代码段，数据段与内存的映射关系</li>
+</ul>
+<p>![[CSAPPJQLG7-57.png]]</p>
+<h3 id="代码段与内存的映射关系"><a href="#代码段与内存的映射关系" class="headerlink" title="代码段与内存的映射关系"></a>代码段与内存的映射关系</h3><ul>
+<li>flag标志每段的权限（rwx)</li>
+<li>off表示这个段在可执行文件中的偏移量</li>
+<li>vaddr 和 paddr表示这个段开始位置的内存地址</li>
+<li>filesz表示代码段的在目标文件中的大小</li>
+<li>memsz表示在内存中所占的大小（与filesz一致）</li>
+<li>这些内容包括ELF header、 程序头部表已经<code>.init</code> <code>.text</code> <code>.rodata</code>节的内容</li>
+</ul>
+<h3 id="数据段与内存的映射关系"><a href="#数据段与内存的映射关系" class="headerlink" title="数据段与内存的映射关系"></a>数据段与内存的映射关系</h3><ul>
+<li>flag标志每段的权限（rwx)</li>
+<li>off表示这个段在可执行文件中的偏移量</li>
+<li>vaddr 和 paddr表示这个段开始位置的内存地址</li>
+<li>filesz表示此段在目标文件中的大小</li>
+<li>memsz表示此段在内存中所占的大小（多出来8个字节：用来存放<code>.bss</code>的数据。<code>.bss</code>不占用可执行文件的空间，但是在运行时会把其中的数据初始化为0）</li>
+<li>这些内容包括ELF header、 程序头部表已经<code>.init</code> <code>.text</code> <code>.rodata</code>节的内容</li>
+</ul>
+<h3 id="段加载到内存时的一种优化"><a href="#段加载到内存时的一种优化" class="headerlink" title="段加载到内存时的一种优化"></a>段加载到内存时的一种优化</h3><ul>
+<li>对于任何一个段，链接器必须选择一个起始地址vaddr，使得 $vaddr \mod\ align &#x3D; off \mod\ align$</li>
+<li>off表示段在可执行文件中相对于起始位置的偏移量</li>
+<li>align是程序表中指定的对齐量</li>
+<li>这种对齐要求属于优化的一种，可以使程序在执行时，可执行文件中的段能更高效的传送到内存中</li>
+</ul>
+<h2 id="如何加载运行"><a href="#如何加载运行" class="headerlink" title="如何加载运行"></a>如何加载运行</h2><ul>
+<li>运行prog，在shell中输入<code>./prog</code></li>
+<li>所有的linux程序都可以通过调用<code>execve</code>来调用加载器</li>
+<li>加载器将可执行目标文件中的代码和数据从磁盘复制到内存中，然后跳转到程序的入口来运行该程序</li>
+<li><strong>将程序从磁盘复制到内存并运行的过程叫做加载</strong></li>
+</ul>
+<p>![[CSAPPJQLG7-58.png]]</p>
+<ul>
+<li>每一个Linux程序都有一个运行时内存镜像</li>
+<li>在linux系统中代码段总是从0x4000000开始，然后是数据段</li>
+<li>运行时堆在数据段之后，堆的生长方向是从低地址到高地址</li>
+<li>堆后面的区域为共享模块保留，这个区域将堆和栈隔开</li>
+<li>用户栈的起始地址是2^48 - 1，这是最大的合法用户地址，栈的生长方向从高地址到低地址</li>
+<li>再往上，地址从2^48 - 1开始，是为操作系统的代码和数据保留的，这部分内存空间对用户代码不可见</li>
+<li>实际上，由于数据段有地址对齐的要求，所以代码段和数据段之间有间隙</li>
+<li>防止程序受到攻击，在分配栈，共享库已经堆的运行地址时，采用栈随机化的策略，每次程序运行时这些区域的地址位置会改变，但相对位置是不变的</li>
+<li>当加载器运行时，他会为程序创建如图的内存镜像，根据头部程序表的内容，加载器将可执行文件的section复制到内存相应的位置，接下来加载器跳转到程序的入口处，也就是_start函数的地址</li>
+<li>（_start函数在系统目标文件<code>ctrl.o</code>中定义，对于所有的c程序都是一样的）</li>
+<li>start函数调用libc_start_main函数，（位于<code>libc.so</code>，作用是初始化执行环境）</li>
+<li>然后，调用用户层的main函数，开始执行可执行程序<code>prog</code>中的main函数</li>
+<li><code>prog</code>执行完毕后，函数main的返回值还是由<code>libc.so</code>中的这个函数来处理，并且在需要的时候把控制权交还给操作系统</li>
+</ul>
+<h1 id="动态链接共享库"><a href="#动态链接共享库" class="headerlink" title="动态链接共享库"></a>动态链接共享库</h1><h2 id="共享库"><a href="#共享库" class="headerlink" title="共享库"></a>共享库</h2><h3 id="由来"><a href="#由来" class="headerlink" title="由来"></a>由来</h3><p>为了解决静态库的缺陷，操作系统提供了一种共享库的技术（Shared Libraries）</p>
+<h3 id="概念-3"><a href="#概念-3" class="headerlink" title="概念"></a>概念</h3><ul>
+<li><strong>共享库是一种特殊的可重定位目标文件</strong>，在linux系统中通常用.so的后缀来表示（windows系统中.dll文件就属于共享库）</li>
+<li>共享库在运行或加载时，可以被加载到任意的内存地址，还能和一个在内存中的程序链接起来，这个过程称为<strong>动态链接</strong>，具体是由动态链接器执行</li>
+</ul>
+<h3 id="如何构造共享库"><a href="#如何构造共享库" class="headerlink" title="如何构造共享库"></a>如何构造共享库</h3><p>![[CSAPPJQLG7-59.png]]</p>
+<p>构造共享库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">linux&gt;gcc -shared -fpic -o libvector.so addvec.c mulvec.c</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>-shared</code>选项是指示编译器创建一个共享的目标文件</li>
+<li><code>-fpic</code>选项是告诉编译器生成位置无关的代码(这样共享库才能被加载到任意的内存位置)</li>
+<li><code>libvector.so</code>就是最终得到的共享库</li>
+</ul>
+<p>利用共享库构造可执行程序prog2</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">linux&gt;gcc -c prog2 main.c ./libvector.so</span><br></pre></td></tr></table></figure>
+
+<h2 id="动态链接-Dynamic-Linking"><a href="#动态链接-Dynamic-Linking" class="headerlink" title="动态链接(Dynamic Linking)"></a>动态链接(Dynamic Linking)</h2><h3 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h3><p>![[CSAPPJQLG7-60.png]]</p>
+<ul>
+<li>与利用静态库构造可执行程序相比，似乎只是改变了库的文件后缀</li>
+<li>但是与静态库不同的是，libvector.so中的代码文件和数据并没有真的被复制到可执行文件prog2中，这个操作只是复制了符号表和一些重定位信息</li>
+<li>当可执行程序prog2被加载运行时，加载器会发现可执行程序prog2中存在一个名为.interp的section，这个section中包含了动态链接器的路径名。实际上，这个动态链接器本身也是一个共享目标文件（ld-linux.so）</li>
+<li>接下来，加载器会将这个动态链接器加载到内存中运行，然后由动态链接器执行重定位代码和数据的工作</li>
+</ul>
+<p>下面是重定位代码和数据的过程</p>
+<ol>
+<li>重定位libc.so的代码和数据到某个内存段</li>
+<li>重定位libvector.so中的代码和数据到另一个内存段</li>
+<li>重定位prog2中由libc.so和libvector.so定义的符号引用<br>![[CSAPPJQLG7-61.png]]</li>
+</ol>
+<p>上述操作执行后，动态链接器把控制权交给应用程序prog2，从这个时刻开始，共享库的位置就固定了，并且在程序执行的过程中都不会改变</p>
+<h3 id="运行时加载和链接共享库"><a href="#运行时加载和链接共享库" class="headerlink" title="运行时加载和链接共享库"></a>运行时加载和链接共享库</h3><p>![[CSAPPJQLG7-62.png]]</p>
+<ul>
+<li>linux系统为动态链接器提供了一个简单的接口，允许应用程序在运行时加载和链接共享库</li>
+<li>使用函数dlopen可以动态地加载共享库libvector.so</li>
+<li>RTLD_LAZY指示链接器将符号解析的操作推迟，直到共享库代码执行时再进行符号解析</li>
+<li>调用函数dlsym，该函数有两个参数<ol>
+<li>函数dlopen已经打开的共享库的句柄（handle）</li>
+<li>符号名（addvec)，如果符号存在，返回符号的地址，否则返回NULL</li>
+</ol>
+</li>
+<li>若不再使用libvector.so，则可以调用函数dlclose来卸载该共享库</li>
+</ul>
+<h3 id="强大的功能"><a href="#强大的功能" class="headerlink" title="强大的功能"></a>强大的功能</h3><ul>
+<li>分发软件(Distributing software)<br>  Windows应用的开发者常常利用共享库来进行软件版本的更新，一般会发布一个共享库的新版本，然后用户下载这些新版本的共享库来替代当前的版本，下一次运行程序时，应用程序将自动链接和加载新的共享库</li>
+<li>构建高性能的Web服务器(Building high-performance Web Server)<br>  当需要生成个性化的Web页面已经账户余额时，现代高性能的web服务器可以使用动态链接的方法来生成动态内容<br>  （具体思路：将每个生成动态内容的函数打包在共享库中，当一个来自浏览器的请求到达时，Web服务器动态的加载和链接适当的函数，然后直接调用它，由于函数会一直缓存在服务器的地址空间中，所以只需要一个简单的函数调用就可以处理随后的请求了）<br>  在添加或更新已存在函数时，不需要停止正在运行的服务器就可以实现</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://vks-feng.github.io/">Vks</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://vks-feng.github.io/">https://vks-feng.github.io/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">此文章版权归Vks所有，如有转载，请注明来自原作者</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/CSAPP/">CSAPP</a></div><div class="post_share"><div class="social-share" data-image="/img/VksAvatar.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/07/15/Docker%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/" title="Docker基础学习"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Docker基础学习</div></div></a></div><div class="next-post pull-right"><a href="/2024/05/19/%E9%A2%91%E5%BA%A6%E9%93%BE%E8%A1%A8-%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91/" title="频度链表&amp;哈夫曼树"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">频度链表&amp;哈夫曼树</div></div></a></div></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/VksAvatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Vks</div><div class="author-info__description">志之所趋，无远弗届</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">13</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Vks-Feng"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Vks-Feng" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:vksfeng@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my blog!</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5-%E2%80%94%E2%80%94-Linking"><span class="toc-number">1.</span> <span class="toc-text">链接 —— Linking</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E5%85%A5"><span class="toc-number">1.1.</span> <span class="toc-text">引入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5"><span class="toc-number">1.1.1.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.1.2.</span> <span class="toc-text">链接的实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%94%E7%94%A8"><span class="toc-number">1.1.3.</span> <span class="toc-text">应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%A6%E4%B9%A0%E5%8E%9F%E5%9B%A0"><span class="toc-number">1.1.4.</span> <span class="toc-text">学习原因</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%9E%84%E5%BB%BA%E5%A4%A7%E5%9E%8B%E7%A8%8B%E5%BA%8F%E6%97%B6"><span class="toc-number">1.1.4.1.</span> <span class="toc-text">1. 构建大型程序时</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E9%81%BF%E5%85%8D%E4%B8%80%E4%BA%9B%E9%9A%BE%E4%BB%A5%E5%8F%91%E7%8E%B0%E7%9A%84%E7%BC%96%E7%A8%8B%E9%94%99%E8%AF%AF"><span class="toc-number">1.1.4.2.</span> <span class="toc-text">2. 避免一些难以发现的编程错误</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E7%90%86%E8%A7%A3%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E4%B8%AD%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F%E8%A7%84%E5%88%99"><span class="toc-number">1.1.4.3.</span> <span class="toc-text">3. 理解编程语言中的作用域规则</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E7%90%86%E8%A7%A3%E9%87%8D%E8%A6%81%E7%9A%84%E7%B3%BB%E7%BB%9F%E6%A6%82%E5%BF%B5"><span class="toc-number">1.1.4.4.</span> <span class="toc-text">4. 理解重要的系统概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E6%9B%B4%E5%A5%BD%E5%9C%B0%E5%88%A9%E7%94%A8%E5%85%B1%E4%BA%AB%E5%BA%93"><span class="toc-number">1.1.4.5.</span> <span class="toc-text">5. 更好地利用共享库</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.2.</span> <span class="toc-text">具体示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E5%8F%AF%E6%89%A7%E8%A1%8C%E7%A8%8B%E5%BA%8F%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="toc-number">1.3.</span> <span class="toc-text">生成可执行程序的过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%84%E5%A4%84%E7%90%86"><span class="toc-number">1.3.1.</span> <span class="toc-text">预处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91"><span class="toc-number">1.3.2.</span> <span class="toc-text">编译</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B1%87%E7%BC%96"><span class="toc-number">1.3.3.</span> <span class="toc-text">汇编</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5"><span class="toc-number">1.3.4.</span> <span class="toc-text">链接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C"><span class="toc-number">1.3.5.</span> <span class="toc-text">运行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.4.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%AF%E9%87%8D%E5%AE%9A%E4%BD%8D%E7%9B%AE%E6%A0%87%E6%96%87%E4%BB%B6-%E2%80%94%E2%80%94-Relocatable-Object-Files"><span class="toc-number">2.</span> <span class="toc-text">可重定位目标文件 —— Relocatable Object Files</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%BC%95%E5%85%A5"><span class="toc-number">2.1.</span> <span class="toc-text">代码引入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E6%89%A7%E8%A1%8C%E7%9B%AE%E6%A0%87%E6%96%87%E4%BB%B6"><span class="toc-number">2.2.</span> <span class="toc-text">可执行目标文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86"><span class="toc-number">2.2.1.</span> <span class="toc-text">组成部分</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ELF-header"><span class="toc-number">2.3.</span> <span class="toc-text">ELF header</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%A4%B416%E5%AD%97%E8%8A%82"><span class="toc-number">2.3.1.</span> <span class="toc-text">开头16字节</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%80%E5%A7%8B4%E5%AD%97%E8%8A%82"><span class="toc-number">2.3.1.1.</span> <span class="toc-text">开始4字节</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC5%E5%AD%97%E8%8A%82"><span class="toc-number">2.3.1.2.</span> <span class="toc-text">第5字节</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC6%E5%AD%97%E8%8A%82"><span class="toc-number">2.3.1.3.</span> <span class="toc-text">第6字节</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC7%E5%AD%97%E8%8A%82"><span class="toc-number">2.3.1.4.</span> <span class="toc-text">第7字节</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%8E9%E4%B8%AA%E5%AD%97%E8%8A%82"><span class="toc-number">2.3.1.5.</span> <span class="toc-text">后9个字节</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Type"><span class="toc-number">2.3.2.</span> <span class="toc-text">Type</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Size-of-this-header"><span class="toc-number">2.3.3.</span> <span class="toc-text">Size of this header</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Section-header-table-%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="toc-number">2.3.4.</span> <span class="toc-text">Section header table 的信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ELF%E6%96%87%E4%BB%B6%E5%A4%A7%E5%B0%8F"><span class="toc-number">2.3.5.</span> <span class="toc-text">ELF文件大小</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#section-header-table"><span class="toc-number">2.4.</span> <span class="toc-text">section header table</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#text"><span class="toc-number">2.4.1.</span> <span class="toc-text">.text</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#data"><span class="toc-number">2.4.2.</span> <span class="toc-text">.data</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bss"><span class="toc-number">2.4.3.</span> <span class="toc-text">.bss</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8"><span class="toc-number">2.4.3.1.</span> <span class="toc-text">作用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#data-bss"><span class="toc-number">2.4.3.2.</span> <span class="toc-text">.data &amp; .bss</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%82%E5%AF%9F%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">2.4.3.3.</span> <span class="toc-text">观察到的问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E5%9B%A0"><span class="toc-number">2.4.3.4.</span> <span class="toc-text">原因</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rodata"><span class="toc-number">2.4.4.</span> <span class="toc-text">.rodata</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BD%99sections"><span class="toc-number">2.4.5.</span> <span class="toc-text">其余sections</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%A6%E5%8F%B7%E4%B8%8E%E7%AC%A6%E5%8F%B7%E8%A1%A8"><span class="toc-number">3.</span> <span class="toc-text">符号与符号表</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E5%85%A5-1"><span class="toc-number">3.1.</span> <span class="toc-text">引入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#symtab"><span class="toc-number">3.2.</span> <span class="toc-text">.symtab</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%97%E8%A1%A8%E8%AF%B4%E6%98%8E"><span class="toc-number">3.2.1.</span> <span class="toc-text">列表说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0"><span class="toc-number">3.2.2.</span> <span class="toc-text">函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#main-func"><span class="toc-number">3.2.2.1.</span> <span class="toc-text">main &amp; func</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#printf"><span class="toc-number">3.2.2.2.</span> <span class="toc-text">printf</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F"><span class="toc-number">3.2.3.</span> <span class="toc-text">全局变量</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#count-value"><span class="toc-number">3.2.3.1.</span> <span class="toc-text">count &amp; value</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Common"><span class="toc-number">3.2.3.1.1.</span> <span class="toc-text">Common</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%80%E9%83%A8%E9%9D%99%E6%80%81%E5%8F%98%E9%87%8F"><span class="toc-number">3.2.4.</span> <span class="toc-text">局部静态变量</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#a-b"><span class="toc-number">3.2.4.1.</span> <span class="toc-text">a &amp; b</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%A6%E5%8F%B7%E5%90%8D%E6%97%A0%E6%98%BE%E5%BC%8F%E8%A1%A8%E9%A1%B9"><span class="toc-number">3.2.5.</span> <span class="toc-text">符号名无显式表项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F"><span class="toc-number">3.2.6.</span> <span class="toc-text">局部变量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Symbol"><span class="toc-number">3.3.</span> <span class="toc-text">Symbol</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Global-Symbols-%E5%85%A8%E5%B1%80%E7%AC%A6%E5%8F%B7"><span class="toc-number">3.3.1.</span> <span class="toc-text">Global Symbols(全局符号)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Externals-Symbols-%E5%A4%96%E9%83%A8%E7%AC%A6%E5%8F%B7"><span class="toc-number">3.3.2.</span> <span class="toc-text">Externals Symbols(外部符号)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Local-Symbols-%E5%B1%80%E9%83%A8%E7%AC%A6%E5%8F%B7"><span class="toc-number">3.3.3.</span> <span class="toc-text">Local Symbols(局部符号)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#static"><span class="toc-number">3.4.</span> <span class="toc-text">static</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%A6%E5%8F%B7%E8%A7%A3%E6%9E%90%E5%92%8C%E9%9D%99%E6%80%81%E5%BA%93%EF%BC%88Static-Library"><span class="toc-number">4.</span> <span class="toc-text">符号解析和静态库（Static Library)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%A6%E5%8F%B7%E8%A7%A3%E6%9E%90"><span class="toc-number">4.1.</span> <span class="toc-text">符号解析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%BE%E4%B8%8D%E5%88%B0%E7%AC%A6%E5%8F%B7%E5%AE%9A%E4%B9%89"><span class="toc-number">4.1.1.</span> <span class="toc-text">找不到符号定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Strong-symbols-%E5%BC%BA%E7%AC%A6%E5%8F%B7-Weak-symbols-%E5%BC%B1%E7%AC%A6%E5%8F%B7"><span class="toc-number">4.1.2.</span> <span class="toc-text">Strong symbols(强符号) &amp; Weak symbols(弱符号)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#static-1"><span class="toc-number">4.1.2.1.</span> <span class="toc-text">static</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F"><span class="toc-number">4.1.2.1.1.</span> <span class="toc-text">1. 局部变量</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F"><span class="toc-number">4.1.2.1.2.</span> <span class="toc-text">2. 全局变量</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-%E5%87%BD%E6%95%B0"><span class="toc-number">4.1.2.1.3.</span> <span class="toc-text">3. 函数</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93-1"><span class="toc-number">4.1.3.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5%E5%99%A8%E7%9A%84%E7%AC%A6%E5%8F%B7%E8%A7%A3%E6%9E%90%E8%A7%84%E5%88%99%EF%BC%88%E5%A6%82%E4%BD%95%E8%A7%A3%E6%9E%90%E5%A4%9A%E9%87%8D%E5%AE%9A%E4%B9%89%E7%9A%84%E7%AC%A6%E5%8F%B7%EF%BC%89"><span class="toc-number">4.1.4.</span> <span class="toc-text">链接器的符号解析规则（如何解析多重定义的符号）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%9A%E4%B8%AA%E5%90%8C%E5%90%8D%E7%9A%84%E5%BC%BA%E7%AC%A6%E5%8F%B7%E4%B8%80%E8%B5%B7%E5%87%BA%E7%8E%B0"><span class="toc-number">4.1.4.1.</span> <span class="toc-text">多个同名的强符号一起出现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E5%BC%BA%E7%AC%A6%E5%8F%B7%E5%92%8C%E5%A4%9A%E4%B8%AA%E5%90%8C%E5%90%8D%E5%BC%B1%E7%AC%A6%E5%8F%B7%E4%B8%80%E8%B5%B7%E5%87%BA%E7%8E%B0"><span class="toc-number">4.1.4.2.</span> <span class="toc-text">一个强符号和多个同名弱符号一起出现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%9A%E4%B8%AA%E5%BC%B1%E7%AC%A6%E5%8F%B7%E4%B8%80%E8%B5%B7%E5%87%BA%E7%8E%B0"><span class="toc-number">4.1.4.3.</span> <span class="toc-text">多个弱符号一起出现</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E5%BA%93"><span class="toc-number">4.2.</span> <span class="toc-text">静态库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5-1"><span class="toc-number">4.2.1.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%84%E9%80%A0%E9%9D%99%E6%80%81%E5%BA%93"><span class="toc-number">4.2.2.</span> <span class="toc-text">构造静态库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E5%BA%93%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">4.2.3.</span> <span class="toc-text">静态库的使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E7%9A%84%E9%93%BE%E6%8E%A5%E8%BF%87%E7%A8%8B"><span class="toc-number">4.2.4.</span> <span class="toc-text">具体的链接过程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A5%E5%85%85%E9%83%A8%E5%88%86"><span class="toc-number">4.3.</span> <span class="toc-text">补充部分</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E5%BA%93%E7%9A%84%E8%A7%A3%E6%9E%90%E8%BF%87%E7%A8%8B-%E2%80%94%E2%80%94-Static-Linking"><span class="toc-number">5.</span> <span class="toc-text">静态库的解析过程  —— Static Linking</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%A6%E5%8F%B7%E8%A7%A3%E6%9E%90%E9%98%B6%E6%AE%B5"><span class="toc-number">5.1.</span> <span class="toc-text">符号解析阶段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">5.2.</span> <span class="toc-text">存在的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E5%BA%93%E7%9A%84%E6%98%8E%E6%98%BE%E7%BC%BA%E7%82%B9"><span class="toc-number">5.3.</span> <span class="toc-text">静态库的明显缺点</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%87%8D%E5%AE%9A%E4%BD%8D-%E2%80%94%E2%80%94-Relocation"><span class="toc-number">6.</span> <span class="toc-text">重定位 —— Relocation</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E5%85%A5-2"><span class="toc-number">6.1.</span> <span class="toc-text">引入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E5%AE%9A%E4%BD%8D%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="toc-number">6.2.</span> <span class="toc-text">重定位的过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B"><span class="toc-number">6.2.1.</span> <span class="toc-text">代码示例</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5"><span class="toc-number">6.2.1.1.</span> <span class="toc-text">第一步</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5"><span class="toc-number">6.2.1.2.</span> <span class="toc-text">第二步</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Relocation-Entries%EF%BC%88%E9%87%8D%E5%AE%9A%E4%BD%8D%E6%9D%A1%E7%9B%AE%EF%BC%89"><span class="toc-number">6.3.</span> <span class="toc-text">Relocation Entries（重定位条目）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5-2"><span class="toc-number">6.3.1.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%9F%E8%83%BD"><span class="toc-number">6.3.2.</span> <span class="toc-text">功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%8D%E7%BD%AE"><span class="toc-number">6.3.3.</span> <span class="toc-text">位置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93%E5%AE%9A%E4%B9%89"><span class="toc-number">6.3.4.</span> <span class="toc-text">结构体定义</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E5%AE%9A%E4%BD%8D%E7%B1%BB%E5%9E%8B%EF%BC%88type%EF%BC%89"><span class="toc-number">6.3.4.1.</span> <span class="toc-text">重定位类型（type）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5%E5%99%A8%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E9%87%8D%E5%AE%9A%E4%BD%8D%E6%9D%A1%E7%9B%AE%E8%BF%9B%E8%A1%8C%E9%87%8D%E5%AE%9A%E4%BD%8D"><span class="toc-number">6.4.</span> <span class="toc-text">链接器如何使用重定位条目进行重定位</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E5%AE%9A%E4%BD%8D%E7%9B%B8%E5%AF%B9%E5%BC%95%E7%94%A8-%EF%BC%88%E4%BB%A5sum%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="toc-number">6.4.1.</span> <span class="toc-text">重定位相对引用 （以sum为例）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E5%AE%9A%E4%BD%8D%E7%BB%9D%E5%AF%B9%E5%BC%95%E7%94%A8%EF%BC%88%E4%BB%A5array%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="toc-number">6.4.2.</span> <span class="toc-text">重定位绝对引用（以array为例）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E9%87%8D%E5%AE%9A%E4%BD%8D"><span class="toc-number">6.4.3.</span> <span class="toc-text">完成重定位</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%AF%E6%89%A7%E8%A1%8C%E7%9B%AE%E6%A0%87%E6%96%87%E4%BB%B6%EF%BC%88Executable-Object-Files%EF%BC%89"><span class="toc-number">7.</span> <span class="toc-text">可执行目标文件（Executable Object Files）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F"><span class="toc-number">7.1.</span> <span class="toc-text">文件格式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E5%A4%B4%E9%83%A8%E8%A1%A8%EF%BC%88Program-Header-Table"><span class="toc-number">7.2.</span> <span class="toc-text">程序头部表（Program Header Table)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%AE%B5%E4%B8%8E%E5%86%85%E5%AD%98%E7%9A%84%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB"><span class="toc-number">7.2.1.</span> <span class="toc-text">代码段与内存的映射关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%AE%B5%E4%B8%8E%E5%86%85%E5%AD%98%E7%9A%84%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB"><span class="toc-number">7.2.2.</span> <span class="toc-text">数据段与内存的映射关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AE%B5%E5%8A%A0%E8%BD%BD%E5%88%B0%E5%86%85%E5%AD%98%E6%97%B6%E7%9A%84%E4%B8%80%E7%A7%8D%E4%BC%98%E5%8C%96"><span class="toc-number">7.2.3.</span> <span class="toc-text">段加载到内存时的一种优化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%8A%A0%E8%BD%BD%E8%BF%90%E8%A1%8C"><span class="toc-number">7.3.</span> <span class="toc-text">如何加载运行</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%85%B1%E4%BA%AB%E5%BA%93"><span class="toc-number">8.</span> <span class="toc-text">动态链接共享库</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B1%E4%BA%AB%E5%BA%93"><span class="toc-number">8.1.</span> <span class="toc-text">共享库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%B1%E6%9D%A5"><span class="toc-number">8.1.1.</span> <span class="toc-text">由来</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5-3"><span class="toc-number">8.1.2.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E6%9E%84%E9%80%A0%E5%85%B1%E4%BA%AB%E5%BA%93"><span class="toc-number">8.1.3.</span> <span class="toc-text">如何构造共享库</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5-Dynamic-Linking"><span class="toc-number">8.2.</span> <span class="toc-text">动态链接(Dynamic Linking)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%87%E7%A8%8B"><span class="toc-number">8.2.1.</span> <span class="toc-text">过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E5%8A%A0%E8%BD%BD%E5%92%8C%E9%93%BE%E6%8E%A5%E5%85%B1%E4%BA%AB%E5%BA%93"><span class="toc-number">8.2.2.</span> <span class="toc-text">运行时加载和链接共享库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%BA%E5%A4%A7%E7%9A%84%E5%8A%9F%E8%83%BD"><span class="toc-number">8.2.3.</span> <span class="toc-text">强大的功能</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/15/Docker%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/" title="Docker基础学习">Docker基础学习</a><time datetime="2024-07-15T11:40:05.000Z" title="发表于 2024-07-15 19:40:05">2024-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/01/CSAPP-Chapter7/" title="CSAPP_Chapter7">CSAPP_Chapter7</a><time datetime="2024-06-01T15:53:14.000Z" title="发表于 2024-06-01 23:53:14">2024-06-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/19/%E9%A2%91%E5%BA%A6%E9%93%BE%E8%A1%A8-%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91/" title="频度链表&amp;哈夫曼树">频度链表&amp;哈夫曼树</a><time datetime="2024-05-19T01:50:36.000Z" title="发表于 2024-05-19 09:50:36">2024-05-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/15/AttackLab-phase5/" title="AttackLab-phase5">AttackLab-phase5</a><time datetime="2024-05-15T05:26:59.000Z" title="发表于 2024-05-15 13:26:59">2024-05-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/12/Huffman%E6%96%87%E4%BB%B6%E8%A7%A3%E7%A0%81-WHU/" title="Huffman文件解码--WHU">Huffman文件解码--WHU</a><time datetime="2024-05-12T03:48:02.000Z" title="发表于 2024-05-12 11:48:02">2024-05-12</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By Vks</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">I wish you to become your own sun, no need to rely on who's light.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const initValine = () => {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'm9pkoaM51rwmIpdPUDukvQQj-MdYXbMMI',
+      appKey: 'YLQGj1L2xfuW0PeDPDsF20Bq',
+      avatar: 'monsterid',
+      serverURLs: 'https://m9pkoam5.api.lncldglobal.com',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  const loadValine = async () => {
+    if (typeof Valine === 'function') initValine()
+    else {
+      await getScript('https://cdn.jsdelivr.net/npm/valine@1.5.1/dist/Valine.min.js')
+      initValine()
+    }
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/canvas-fluttering-ribbon.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
