@@ -1,0 +1,407 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Number Representation | Vks🐱</title><meta name="author" content="Vks"><meta name="copyright" content="Vks"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Number BasesAlready learned in CSAPP Signed RepresentationsSigned Intergers n bits &#x3D;&gt; $2^n$ things– half positive, half negative?  Sign and Magnitude “first” bit gives sign, rest treated as un">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Number Representation">
+<meta property="og:url" content="http://example.com/2024/07/28/Number-Representation/index.html">
+<meta property="og:site_name" content="Vks🐱">
+<meta property="og:description" content="Number BasesAlready learned in CSAPP Signed RepresentationsSigned Intergers n bits &#x3D;&gt; $2^n$ things– half positive, half negative?  Sign and Magnitude “first” bit gives sign, rest treated as un">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/VksAvatar.png">
+<meta property="article:published_time" content="2024-07-28T13:52:46.000Z">
+<meta property="article:modified_time" content="2024-07-28T14:10:19.724Z">
+<meta property="article:author" content="Vks">
+<meta property="article:tag" content="cs61c">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/VksAvatar.png"><link rel="shortcut icon" href="/img/Vksicon.png"><link rel="canonical" href="http://example.com/2024/07/28/Number-Representation/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Number Representation',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-07-28 22:10:19'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.2.0"></head><body><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><div class="loading-img" style="background-image:url(/img/VksAvatar.png);background-repeat: no-repeat;background-position:center;"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = 'hidden';
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+
+preloader.initLoading()
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (false) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><script>window.paceOptions = {
+  restartOnPushState: false
+}
+
+document.addEventListener('pjax:send', () => {
+  Pace.restart()
+})
+</script><link rel="stylesheet" href="/source/css/preload_change.css"/><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/VksAvatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Vks🐱"><span class="site-name">Vks🐱</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Number Representation</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-07-28T13:52:46.000Z" title="发表于 2024-07-28 21:52:46">2024-07-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-07-28T14:10:19.724Z" title="更新于 2024-07-28 22:10:19">2024-07-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/cs61c/">cs61c</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Number Representation"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Number-Bases"><a href="#Number-Bases" class="headerlink" title="Number Bases"></a>Number Bases</h2><p>Already learned in CSAPP</p>
+<h2 id="Signed-Representations"><a href="#Signed-Representations" class="headerlink" title="Signed Representations"></a>Signed Representations</h2><h2 id="Signed-Intergers"><a href="#Signed-Intergers" class="headerlink" title="Signed Intergers"></a>Signed Intergers</h2><ul>
+<li>n bits &#x3D;&gt; $2^n$ things<br>– half positive, half negative?</li>
+</ul>
+<h3 id="Sign-and-Magnitude"><a href="#Sign-and-Magnitude" class="headerlink" title="Sign and Magnitude"></a>Sign and Magnitude</h3><ul>
+<li>“first” bit gives sign, rest treated as unsigned(magnitude)</li>
+<li>below is an example<ul>
+<li>$000_2 &#x3D; +0_{10}$</li>
+<li>$001_2 &#x3D; +1_{10}$</li>
+<li>$010_2 &#x3D; +2_{10}$</li>
+<li>$011_2 &#x3D; +3_{10}$</li>
+</ul>
+<hr>
+<ul>
+<li>$100_2 &#x3D; -0_{10}$</li>
+<li>$101_2 &#x3D; -1_{10}$</li>
+<li>$110_2 &#x3D; -2_{10}$</li>
+<li>$111_2 &#x3D; -3_{10}$</li>
+</ul>
+</li>
+</ul>
+<h4 id="Zero"><a href="#Zero" class="headerlink" title="Zero"></a>Zero</h4><p>$(0……0)_2$  and  $(1……0)_2$  &#x3D;  $\pm0$</p>
+<h4 id="Most-pos-number"><a href="#Most-pos-number" class="headerlink" title="Most pos number"></a>Most pos number</h4><p>$(01……1)<em>2 &#x3D; (2^{(n-1)}-1)</em>{10}$</p>
+<h4 id="Most-neg-number"><a href="#Most-neg-number" class="headerlink" title="Most neg number"></a>Most neg number</h4><p>$(1……1)<em>2 &#x3D; -(2^{(n-1)}-1)</em>{10}$</p>
+<h4 id="Increment"><a href="#Increment" class="headerlink" title="Increment"></a>Increment</h4><p>not quite ideal.</p>
+<h3 id="Biased-Notation"><a href="#Biased-Notation" class="headerlink" title="Biased Notation"></a>Biased Notation</h3><ul>
+<li>Like unsigned, but “shifted” so zero is (roughly) in the middle</li>
+<li>below is an example<ul>
+<li>value &#x3D; “unsigned value” - bias</li>
+<li>conventional bias : $(2^{n-1}-1)$</li>
+<li>$000_2 &#x3D; -3_{10}$</li>
+<li>$001_2 &#x3D; -2_{10}$</li>
+<li>$010_2 &#x3D; -1_{10}$</li>
+<li>$011_2 &#x3D; 0_{10}$</li>
+<li>$100_2 &#x3D; 1_{10}$</li>
+<li>$101_2 &#x3D; 2_{10}$</li>
+<li>$110_2 &#x3D; 3_{10}$</li>
+<li>$111_2 &#x3D; 4_{10}$</li>
+</ul>
+</li>
+</ul>
+<h4 id="Zero-1"><a href="#Zero-1" class="headerlink" title="Zero"></a>Zero</h4><p>$01……1_2 &#x3D; 0_{10}$</p>
+<h4 id="Most-neg-number-1"><a href="#Most-neg-number-1" class="headerlink" title="Most neg number"></a>Most neg number</h4><p>$0……0_2 &#x3D; -(2^{(n-1)-1})_{10}$</p>
+<h4 id="Most-pos-number-1"><a href="#Most-pos-number-1" class="headerlink" title="Most pos number"></a>Most pos number</h4><p>$1……1_2 &#x3D; 2^{(n-1)}_{10}$</p>
+<h4 id="Increment-1"><a href="#Increment-1" class="headerlink" title="Increment"></a>Increment</h4><p>just like unsigned(sorta).</p>
+<h3 id="One’s-Complement"><a href="#One’s-Complement" class="headerlink" title="One’s Complement"></a>One’s Complement</h3><ul>
+<li>New negation procedure - complement the bits:</li>
+<li>the idea is neg numbers are generaeted by flipping or complementing the bit, which means all 0 will be turned into 1 and all 1 will be turned into 0. </li>
+<li>below is an example<ul>
+<li>$000_2 &#x3D; +0_{10}$</li>
+<li>$001_2 &#x3D; +1_{10}$</li>
+<li>$010_2 &#x3D; +2_{10}$</li>
+<li>$011_2 &#x3D; +3_{10}$</li>
+</ul>
+<hr>
+<ul>
+<li>$100_2 &#x3D; -3_{10}$</li>
+<li>$101_2 &#x3D; -2_{10}$</li>
+<li>$110_2 &#x3D; -1_{10}$</li>
+<li>$111_2 &#x3D; -0_{10}$</li>
+</ul>
+</li>
+</ul>
+<h4 id="Zero-2"><a href="#Zero-2" class="headerlink" title="Zero"></a>Zero</h4><p>$0……0_2$ and $1……1_2$ &#x3D; $\pm0_{10}$</p>
+<h4 id="Most-neg-number-2"><a href="#Most-neg-number-2" class="headerlink" title="Most neg number"></a>Most neg number</h4><p>$1……0_2 &#x3D; -(2^{(n-1)}-1)_{10}$</p>
+<h4 id="Most-pos-number-2"><a href="#Most-pos-number-2" class="headerlink" title="Most pos number"></a>Most pos number</h4><p>$01……1_2 &#x3D; (2^{(n-1)}-1)_{10}$</p>
+<h4 id="Increment-2"><a href="#Increment-2" class="headerlink" title="Increment"></a>Increment</h4><ul>
+<li>kind of like unsigned</li>
+<li>a weird edge case where if the most significant bit overflows or there is a carryout,we have to wrap around and add that to the beginning of the number. AND THIS IS REALLY COMPLICATED .</li>
+</ul>
+<h3 id="Two’s-Complement"><a href="#Two’s-Complement" class="headerlink" title="Two’s Complement"></a><strong>Two’s Complement</strong></h3><ul>
+<li>Like One’s Complement, but “shift” negative #s by 1:</li>
+<li>Two’s Complement take the idea of One’s Complement where we complement or negate the bits, but then it adds 1</li>
+<li>So to get the neg number, we take the pos value, negate the bits and then add 1</li>
+<li>below is an example<ul>
+<li>$000_2 &#x3D; +0_{10}$</li>
+<li>$001_2 &#x3D; +1_{10}$</li>
+<li>$010_2 &#x3D; +2_{10}$</li>
+<li>$011_2 &#x3D; +3_{10}$</li>
+</ul>
+<hr>
+<ul>
+<li>$100_2 &#x3D; -4_{10}$</li>
+<li>$101_2 &#x3D; -3_{10}$</li>
+<li>$110_2 &#x3D; -2_{10}$</li>
+<li>$111_2 &#x3D; -1_{10}$</li>
+</ul>
+</li>
+</ul>
+<h4 id="Zero-3"><a href="#Zero-3" class="headerlink" title="Zero"></a>Zero</h4><p>$0……0_2$ &#x3D; $\pm0_{10}$</p>
+<h4 id="Most-neg-number-3"><a href="#Most-neg-number-3" class="headerlink" title="Most neg number"></a>Most neg number</h4><p>$1……0_2 &#x3D; -2^{(n-1)}_{10}$</p>
+<h4 id="Most-pos-number-3"><a href="#Most-pos-number-3" class="headerlink" title="Most pos number"></a>Most pos number</h4><p>$01……1_2 &#x3D; (2^{(n-1)}-1)_{10}$</p>
+<h4 id="Increment-3"><a href="#Increment-3" class="headerlink" title="Increment"></a>Increment</h4><p>JUST LIKE UNSIGNED!</p>
+<h3 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h3><ul>
+<li>Used by all modern hardware</li>
+<li>Roughly evenly split between positive and negative<ul>
+<li>one more negative # becase pos side has 0</li>
+</ul>
+</li>
+<li>Can still use MSB as sign bit</li>
+<li>To negate: Flip the bits and add one</li>
+</ul>
+<h2 id="Overflow"><a href="#Overflow" class="headerlink" title="Overflow"></a>Overflow</h2><h3 id="Numbers-in-a-Computer"><a href="#Numbers-in-a-Computer" class="headerlink" title="Numbers in a Computer"></a>Numbers in a Computer</h3><ul>
+<li>Numbers really have ∞ digits,but hardware can only store a finite number of them(fixed)<ul>
+<li>Usually ignore leading zeros</li>
+<li>Leftmost is most significant bit(MSB)</li>
+<li>Rightmost is least significant bit(LSB)</li>
+</ul>
+</li>
+</ul>
+<h3 id="Overflow-1"><a href="#Overflow-1" class="headerlink" title="Overflow"></a>Overflow</h3><ul>
+<li>Overflow is when the result of an arithmetic operation can’t be represented by the (FINITE) hardware bits<ul>
+<li>i.e. the result is mathematically incorrect</li>
+</ul>
+</li>
+<li>Examples:<ul>
+<li>Unsigned: 0b1…1 + 1 &#x3D; 0b0…0 &#x3D; 0 ?</li>
+<li>Two’s: 0b01…1 + 1 &#x3D; 0b1…0 &#x3D; $(-2^{(n-1)})_{10}$</li>
+</ul>
+</li>
+<li>Solution add more bits</li>
+</ul>
+<h2 id="Sign-Extension"><a href="#Sign-Extension" class="headerlink" title="Sign Extension"></a>Sign Extension</h2><ul>
+<li>Want to represent the same number using more bits than before<ul>
+<li>Easy for positive #s(add leading 0’s),more complicated for negative #S</li>
+<li>Sign and magnitude: add 0’s after the sign bit</li>
+<li>One’s complement: copy MSB</li>
+<li>Tow’s complement: copy MSB</li>
+</ul>
+</li>
+<li>Example:<ul>
+<li>Sign and magnitude: 0b11 &#x3D; 0b1001</li>
+<li>One’s &#x2F; Two’s complement: 0b11 &#x3D; 0b1111;</li>
+</ul>
+</li>
+</ul>
+<h2 id="Summary-1"><a href="#Summary-1" class="headerlink" title="Summary"></a>Summary</h2><p>Number Representation: How to represent positive and negative integers using binary </p>
+<ul>
+<li>Unsigned: Interpret numeral in base 2 </li>
+<li>Signed: Two’s Complement </li>
+<li>Biased: Add bias </li>
+<li>Sign extension must preserve signed number</li>
+</ul>
+<h2 id="Conversions"><a href="#Conversions" class="headerlink" title="Conversions"></a>Conversions</h2><h3 id="Recommended"><a href="#Recommended" class="headerlink" title="Recommended"></a>Recommended</h3><ol>
+<li>Hex &lt;–&gt; Binary &lt;–&gt; Decimal(easy for translating)</li>
+<li>Remember the decimal $2^0$ to $2^{10}$</li>
+<li>kb: $2^{10}$, mb:  $2^{20}$, gb: $2^{30}$, tb: $2^{40}$, pb: $2^{50}$, eb: $2^{60}$, zb: $2^{70}$, yb: $2^{80}$</li>
+</ol>
+<h3 id="go-from-a-smaller-base-to-a-larger-base"><a href="#go-from-a-smaller-base-to-a-larger-base" class="headerlink" title="go from a smaller base to a larger base"></a>go from a smaller base to a larger base</h3><p>……</p>
+<h3 id="go-from-a-larger-base-to-a-smaller-base"><a href="#go-from-a-larger-base-to-a-smaller-base" class="headerlink" title="go from a larger base to a smaller base"></a>go from a larger base to a smaller base</h3><p>……</p>
+<h3 id="Binary-to-Hex"><a href="#Binary-to-Hex" class="headerlink" title="Binary to Hex"></a>Binary to Hex</h3><p>……</p>
+<h3 id="Hex-to-Binary"><a href="#Hex-to-Binary" class="headerlink" title="Hex to Binary"></a>Hex to Binary</h3><p>……</p>
+<h3 id="bias-notation"><a href="#bias-notation" class="headerlink" title="bias notation"></a>bias notation</h3><p>unsigned value + bias &#x3D;  actual value</p>
+<h3 id="Two’s-complement"><a href="#Two’s-complement" class="headerlink" title="Two’s complement"></a>Two’s complement</h3><ol>
+<li>the sign bit is neg and all other bits are pos</li>
+<li>Fliping bits (except sign bit) and add 1</li>
+</ol>
+<h2 id="Unsigned-and-Tow’s-complement-addition"><a href="#Unsigned-and-Tow’s-complement-addition" class="headerlink" title="Unsigned and Tow’s complement addition"></a>Unsigned and Tow’s complement addition</h2><p>doing addition for unsigned and Tow’s complement is the same<br>but how you interpret the value is different</p>
+<h3 id="overflow"><a href="#overflow" class="headerlink" title="overflow"></a>overflow</h3><h4 id="unsigned"><a href="#unsigned" class="headerlink" title="unsigned"></a>unsigned</h4><p>positive overflow……</p>
+<h4 id="Tow’s-complement"><a href="#Tow’s-complement" class="headerlink" title="Tow’s complement"></a>Tow’s complement</h4><p>positive overflow &amp; negetive overflow……</p>
+<h2 id="Questions"><a href="#Questions" class="headerlink" title="Questions"></a>Questions</h2><p>Take the 4-bit number x &#x3D; 0b1010.<br>Calculate the value represented in the following schemes</p>
+<table>
+<thead>
+<tr>
+<th>schemes</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>unsigned</td>
+<td>$2^3+2^1 &#x3D; 10$</td>
+</tr>
+<tr>
+<td>sign and magnitude</td>
+<td>$-1*2^1 &#x3D; -2$</td>
+</tr>
+<tr>
+<td>biased notation</td>
+<td>$2^3 + 2^1 - (2^3 - 1) &#x3D; 3$(conventional bias : $(2^{n-1}-1)$)</td>
+</tr>
+<tr>
+<td>one’s complement</td>
+<td>-x &#x3D; ~x &#x3D; 0b0101 &#x3D; 5  <strong>&#x3D;&#x3D;&gt;</strong> x &#x3D; -5</td>
+</tr>
+<tr>
+<td>two’s complement</td>
+<td>-x &#x3D; ~x + 1 &#x3D; 0b0101 + 1 &#x3D; 0b0110 &#x3D; 6 <strong>&#x3D;&#x3D;&gt;</strong> x &#x3D; -6</td>
+</tr>
+</tbody></table>
+<h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><ul>
+<li>Bits can be used to represent anything! </li>
+<li>n bits can represent up to 2n things </li>
+<li>Number Representation <ul>
+<li>Unsigned, Bias, 1’s, 2’s </li>
+<li>Overflow </li>
+<li>Sign Extension</li>
+</ul>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://vks-feng.github.io/">Vks</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://vks-feng.github.io/">https://vks-feng.github.io/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">此文章版权归Vks所有，如有转载，请注明来自原作者</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/cs61c/">cs61c</a></div><div class="post_share"><div class="social-share" data-image="/img/VksAvatar.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/07/28/C-Introduction-Pointers/" title="C-Introduction,Pointers"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">C-Introduction,Pointers</div></div></a></div><div class="next-post pull-right"><a href="/2024/07/26/%E5%9F%BA%E7%A1%80%E7%88%AC%E8%99%AB%E5%AD%A6%E4%B9%A0/" title="基础爬虫学习"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">基础爬虫学习</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/07/28/C-Introduction-Pointers/" title="C-Introduction,Pointers"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-28</div><div class="title">C-Introduction,Pointers</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/VksAvatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Vks</div><div class="author-info__description">志之所趋，无远弗届</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Vks-Feng"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Vks-Feng" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:vksfeng@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my blog!</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Number-Bases"><span class="toc-number">1.</span> <span class="toc-text">Number Bases</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Signed-Representations"><span class="toc-number">2.</span> <span class="toc-text">Signed Representations</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Signed-Intergers"><span class="toc-number">3.</span> <span class="toc-text">Signed Intergers</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Sign-and-Magnitude"><span class="toc-number">3.1.</span> <span class="toc-text">Sign and Magnitude</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Zero"><span class="toc-number">3.1.1.</span> <span class="toc-text">Zero</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Most-pos-number"><span class="toc-number">3.1.2.</span> <span class="toc-text">Most pos number</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Most-neg-number"><span class="toc-number">3.1.3.</span> <span class="toc-text">Most neg number</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Increment"><span class="toc-number">3.1.4.</span> <span class="toc-text">Increment</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Biased-Notation"><span class="toc-number">3.2.</span> <span class="toc-text">Biased Notation</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Zero-1"><span class="toc-number">3.2.1.</span> <span class="toc-text">Zero</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Most-neg-number-1"><span class="toc-number">3.2.2.</span> <span class="toc-text">Most neg number</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Most-pos-number-1"><span class="toc-number">3.2.3.</span> <span class="toc-text">Most pos number</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Increment-1"><span class="toc-number">3.2.4.</span> <span class="toc-text">Increment</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#One%E2%80%99s-Complement"><span class="toc-number">3.3.</span> <span class="toc-text">One’s Complement</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Zero-2"><span class="toc-number">3.3.1.</span> <span class="toc-text">Zero</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Most-neg-number-2"><span class="toc-number">3.3.2.</span> <span class="toc-text">Most neg number</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Most-pos-number-2"><span class="toc-number">3.3.3.</span> <span class="toc-text">Most pos number</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Increment-2"><span class="toc-number">3.3.4.</span> <span class="toc-text">Increment</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Two%E2%80%99s-Complement"><span class="toc-number">3.4.</span> <span class="toc-text">Two’s Complement</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Zero-3"><span class="toc-number">3.4.1.</span> <span class="toc-text">Zero</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Most-neg-number-3"><span class="toc-number">3.4.2.</span> <span class="toc-text">Most neg number</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Most-pos-number-3"><span class="toc-number">3.4.3.</span> <span class="toc-text">Most pos number</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Increment-3"><span class="toc-number">3.4.4.</span> <span class="toc-text">Increment</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Summary"><span class="toc-number">3.5.</span> <span class="toc-text">Summary</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Overflow"><span class="toc-number">4.</span> <span class="toc-text">Overflow</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Numbers-in-a-Computer"><span class="toc-number">4.1.</span> <span class="toc-text">Numbers in a Computer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Overflow-1"><span class="toc-number">4.2.</span> <span class="toc-text">Overflow</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sign-Extension"><span class="toc-number">5.</span> <span class="toc-text">Sign Extension</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Summary-1"><span class="toc-number">6.</span> <span class="toc-text">Summary</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conversions"><span class="toc-number">7.</span> <span class="toc-text">Conversions</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Recommended"><span class="toc-number">7.1.</span> <span class="toc-text">Recommended</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#go-from-a-smaller-base-to-a-larger-base"><span class="toc-number">7.2.</span> <span class="toc-text">go from a smaller base to a larger base</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#go-from-a-larger-base-to-a-smaller-base"><span class="toc-number">7.3.</span> <span class="toc-text">go from a larger base to a smaller base</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Binary-to-Hex"><span class="toc-number">7.4.</span> <span class="toc-text">Binary to Hex</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hex-to-Binary"><span class="toc-number">7.5.</span> <span class="toc-text">Hex to Binary</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bias-notation"><span class="toc-number">7.6.</span> <span class="toc-text">bias notation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Two%E2%80%99s-complement"><span class="toc-number">7.7.</span> <span class="toc-text">Two’s complement</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Unsigned-and-Tow%E2%80%99s-complement-addition"><span class="toc-number">8.</span> <span class="toc-text">Unsigned and Tow’s complement addition</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#overflow"><span class="toc-number">8.1.</span> <span class="toc-text">overflow</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#unsigned"><span class="toc-number">8.1.1.</span> <span class="toc-text">unsigned</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Tow%E2%80%99s-complement"><span class="toc-number">8.1.2.</span> <span class="toc-text">Tow’s complement</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Questions"><span class="toc-number">9.</span> <span class="toc-text">Questions</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Review"><span class="toc-number">10.</span> <span class="toc-text">Review</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/28/C-Introduction-Pointers/" title="C-Introduction,Pointers">C-Introduction,Pointers</a><time datetime="2024-07-28T13:54:38.000Z" title="发表于 2024-07-28 21:54:38">2024-07-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/28/Number-Representation/" title="Number Representation">Number Representation</a><time datetime="2024-07-28T13:52:46.000Z" title="发表于 2024-07-28 21:52:46">2024-07-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/26/%E5%9F%BA%E7%A1%80%E7%88%AC%E8%99%AB%E5%AD%A6%E4%B9%A0/" title="基础爬虫学习">基础爬虫学习</a><time datetime="2024-07-26T04:19:39.000Z" title="发表于 2024-07-26 12:19:39">2024-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/15/Docker%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/" title="Docker基础学习">Docker基础学习</a><time datetime="2024-07-15T11:40:05.000Z" title="发表于 2024-07-15 19:40:05">2024-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/01/CSAPP-Chapter7/" title="CSAPP_Chapter7">CSAPP_Chapter7</a><time datetime="2024-06-01T15:53:14.000Z" title="发表于 2024-06-01 23:53:14">2024-06-01</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By Vks</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">I wish you to become your own sun, no need to rely on who's light.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const initValine = () => {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'm9pkoaM51rwmIpdPUDukvQQj-MdYXbMMI',
+      appKey: 'YLQGj1L2xfuW0PeDPDsF20Bq',
+      avatar: 'monsterid',
+      serverURLs: 'https://m9pkoam5.api.lncldglobal.com',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  const loadValine = async () => {
+    if (typeof Valine === 'function') initValine()
+    else {
+      await getScript('https://cdn.jsdelivr.net/npm/valine@1.5.1/dist/Valine.min.js')
+      initValine()
+    }
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/canvas-fluttering-ribbon.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

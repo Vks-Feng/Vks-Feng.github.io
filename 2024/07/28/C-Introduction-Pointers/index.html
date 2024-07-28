@@ -1,0 +1,620 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>C-Introduction,Pointers | Vks🐱</title><meta name="author" content="Vks"><meta name="copyright" content="Vks"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Overview Prerequisites Official prerequisites: “Some” C experience is required before CS61C  C++ or JAVA okay    Introduction C is not a “very high level” language, nor a “big” one, and is not special">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C-Introduction,Pointers">
+<meta property="og:url" content="http://example.com/2024/07/28/C-Introduction-Pointers/index.html">
+<meta property="og:site_name" content="Vks🐱">
+<meta property="og:description" content="Overview Prerequisites Official prerequisites: “Some” C experience is required before CS61C  C++ or JAVA okay    Introduction C is not a “very high level” language, nor a “big” one, and is not special">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/VksAvatar.png">
+<meta property="article:published_time" content="2024-07-28T13:54:38.000Z">
+<meta property="article:modified_time" content="2024-07-28T14:05:45.180Z">
+<meta property="article:author" content="Vks">
+<meta property="article:tag" content="cs61c">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/VksAvatar.png"><link rel="shortcut icon" href="/img/Vksicon.png"><link rel="canonical" href="http://example.com/2024/07/28/C-Introduction-Pointers/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'C-Introduction,Pointers',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-07-28 22:05:45'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.2.0"></head><body><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><div class="loading-img" style="background-image:url(/img/VksAvatar.png);background-repeat: no-repeat;background-position:center;"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = 'hidden';
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+
+preloader.initLoading()
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (false) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><script>window.paceOptions = {
+  restartOnPushState: false
+}
+
+document.addEventListener('pjax:send', () => {
+  Pace.restart()
+})
+</script><link rel="stylesheet" href="/source/css/preload_change.css"/><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/VksAvatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Vks🐱"><span class="site-name">Vks🐱</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">C-Introduction,Pointers</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-07-28T13:54:38.000Z" title="发表于 2024-07-28 21:54:38">2024-07-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-07-28T14:05:45.180Z" title="更新于 2024-07-28 22:05:45">2024-07-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/cs61c/">cs61c</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="C-Introduction,Pointers"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h1><p><img src="/pic/CS61C/C-Intro-Pointer/1.png" alt="1"></p>
+<h1 id="Prerequisites"><a href="#Prerequisites" class="headerlink" title="Prerequisites"></a>Prerequisites</h1><ul>
+<li>Official prerequisites: “Some” C experience is required before CS61C <ul>
+<li>C++ or JAVA okay</li>
+</ul>
+</li>
+</ul>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><blockquote>
+<p>C is not a “very high level” language, nor a “big” one, and is not specialized to any particular area of application. But its absence of restrictions and its generality make it more convenient and effective for many tasks than supposedly more powerful languages. –Kernighan and Ritchie </p>
+</blockquote>
+<ul>
+<li>With C we can write programs that allow us to exploit underlying features of the architecture</li>
+</ul>
+<h1 id="Basic-C-Concepts"><a href="#Basic-C-Concepts" class="headerlink" title="Basic C Concepts"></a>Basic C Concepts</h1><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Compiler</td>
+<td>Creates useable program from C source code</td>
+</tr>
+<tr>
+<td>Typed Variables</td>
+<td>Must declare the kind of data the variable will contain</td>
+</tr>
+<tr>
+<td>Typed functions</td>
+<td>Must declare the kind of data returned from the function</td>
+</tr>
+<tr>
+<td>Header files(.h)</td>
+<td>Allows you to declare functions and variables in separate files</td>
+</tr>
+<tr>
+<td>Structs</td>
+<td>Groups of related values</td>
+</tr>
+<tr>
+<td>Enums</td>
+<td>Lists of predefined values</td>
+</tr>
+<tr>
+<td>Pointers</td>
+<td>Aliases to other variables</td>
+</tr>
+</tbody></table>
+<h2 id="Compilation"><a href="#Compilation" class="headerlink" title="Compilation"></a>Compilation</h2><ul>
+<li>C is a complied language</li>
+<li>C compilers map C programs into architecture-specific machine code (string of 0s and 1s)<ul>
+<li>Unlike Java, which converts to architecture-independent bytecode (run by JVM)</li>
+<li>Unlike python, which directly interprets the code</li>
+<li>Main difference is when your program is mapped to low-level machine instructions</li>
+</ul>
+</li>
+</ul>
+<h3 id="Compliation-Advantages"><a href="#Compliation-Advantages" class="headerlink" title="Compliation Advantages"></a>Compliation Advantages</h3><ul>
+<li><strong>Excellent run-time performance</strong>: Generally much faster than Python or Java for Comparable code because it <em>optimizes for the given architecture</em></li>
+<li><strong>Fair compilation time</strong>: enhancements in compilation procedure (Makefiles) allow us to recompile only the modified files</li>
+</ul>
+<h3 id="Compliation-Disadvantages"><a href="#Compliation-Disadvantages" class="headerlink" title="Compliation Disadvantages"></a>Compliation Disadvantages</h3><ul>
+<li>Compiled files,including the executable,are architecture-specific(CPU type and OS)<ul>
+<li>Executable must be rebuilt on each new system</li>
+<li>i.e. “porting your code” to a new architecture</li>
+</ul>
+</li>
+<li>“Edit-&gt;Compile-&gt;Run[repeat]“ iteration cycle can be slow<ul>
+<li>e.g. when debugging, it is not “Edit-&gt;Run”, you have to compile after edit, which can take some time</li>
+</ul>
+</li>
+</ul>
+<h2 id="Variable-Types"><a href="#Variable-Types" class="headerlink" title="Variable Types"></a>Variable Types</h2><h3 id="Typed-Variables-in-C"><a href="#Typed-Variables-in-C" class="headerlink" title="Typed Variables in C"></a>Typed Variables in C</h3><p><img src="/pic/CS61C/C-Intro-Pointer/2.png" alt="2"></p>
+<ul>
+<li>You must declare the type of data a variable will hold</li>
+<li>Declaration must come before or simultaneously with assignment</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>int</td>
+<td>signed integer</td>
+<td>5, -12, 0</td>
+</tr>
+<tr>
+<td>short</td>
+<td>smaller signed integer</td>
+<td></td>
+</tr>
+<tr>
+<td>long</td>
+<td>larger signed integer</td>
+<td></td>
+</tr>
+<tr>
+<td>char</td>
+<td>single text character or symbol</td>
+<td>‘a’,’D’</td>
+</tr>
+<tr>
+<td>float</td>
+<td>floating point non-integer numbers</td>
+<td>0.0, 1.618, -1.4</td>
+</tr>
+<tr>
+<td>double</td>
+<td>greater precision FP number</td>
+<td></td>
+</tr>
+</tbody></table>
+<ul>
+<li>Integer sizes are machine dependant!<ul>
+<li>Common size is 4 or 8 bytes (32&#x2F;64-bit),but can’t ever assume this</li>
+<li>Can add “unsigned” before <code>int</code> or <code>char</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="Characters"><a href="#Characters" class="headerlink" title="Characters"></a>Characters</h3><ul>
+<li>Encode characters as numbers,same as everything!</li>
+<li>ASCII standard defines 128 different characters and their numeric encodings <a target="_blank" rel="noopener" href="http://www.asciitable.com/">http://www.asciitable.com</a><ul>
+<li><code>char</code> representing the character ‘a’ contains the value 97</li>
+<li><code>char c = &#39;a&#39;</code> or <code>char c = 97</code> are both valid</li>
+</ul>
+</li>
+<li><strong>A <code>char</code> take up 1 byte of space</strong><ul>
+<li>7 bits is enough to store a char ($2^7 &#x3D; 128$),but we add a bit to rough up to 1 byte since computers usually deal with muliples of bytes</li>
+</ul>
+</li>
+</ul>
+<h3 id="Typecasting-in-C-1-2"><a href="#Typecasting-in-C-1-2" class="headerlink" title="Typecasting in C (1&#x2F;2)"></a>Typecasting in C (1&#x2F;2)</h3><ul>
+<li>C is a “weakly” typed language<ul>
+<li>You can explicitly <strong>typecast</strong> from any type to any other:<br>  <code>int i = -1;</code><br>  <code>if(i &lt; 0)</code><br>  <code>printf(&quot;This will print\\n&quot;);</code><br>  <code>if((unsigned int) i &lt; 0)</code><br>  <code>printf(&quot;This will not print\\n&quot;);</code></li>
+</ul>
+</li>
+<li>This is possible because everything is stored as bits!<ul>
+<li>Can be seen as changing the “programmer’s perspective” of the variable</li>
+</ul>
+</li>
+<li>Can typecast <em>anything</em>, even if it doesn’t make sense:<br>  <code>struct node n;</code><br>  <code>int i = (int) n</code><ul>
+<li>More freedom, but easier to shoot yourself in the foot</li>
+</ul>
+</li>
+</ul>
+<h3 id="Typed-Functions-in-C"><a href="#Typed-Functions-in-C" class="headerlink" title="Typed Functions in C"></a>Typed Functions in C</h3><ul>
+<li>You have to declare the type of data you plan to return from a function</li>
+<li>Return type can be any C variable type or <code>void</code> for no return value<ul>
+<li>Place on the left of function name</li>
+</ul>
+</li>
+<li>Also necessary to define types for function arguments</li>
+<li>Declaring the “prototype” of a function allows you to use it<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//function prototypes</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">my_func</span><span class="params">(<span class="type">int</span> ,<span class="type">int</span>)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">sayHello</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//function definitions</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">my_func</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y)</span> &#123;</span><br><span class="line">	sayHello();</span><br><span class="line">	<span class="keyword">return</span> x * y;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">sayHello</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Hello\n&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="Structs-in-C"><a href="#Structs-in-C" class="headerlink" title="Structs in C"></a>Structs in C</h3><ul>
+<li>Way of defining compound data types</li>
+<li>A structured group of variables, possibly including other structs<ul>
+<li>Thing of it as an instruction to C on how to arrange a bunch of bits in a buckets</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">	<span class="type">int</span> lengthInSeconds;</span><br><span class="line">	<span class="type">int</span> yearRecorded;</span><br><span class="line">&#125; Song;</span><br><span class="line"></span><br><span class="line">Song song1;</span><br><span class="line">song1.lengthInSeconds = <span class="number">213</span>;</span><br><span class="line">song1.yearRecorded = <span class="number">1994</span>;</span><br><span class="line"></span><br><span class="line">Song song2;</span><br><span class="line">song2.lengthInSeconds = <span class="number">248</span>;</span><br><span class="line">song2.yearRecorded = <span class="number">1988</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Structs-Alignment-and-Padding-in-C"><a href="#Structs-Alignment-and-Padding-in-C" class="headerlink" title="Structs Alignment and Padding in C"></a>Structs Alignment and Padding in C</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">foo</span> &#123;</span></span><br><span class="line">	<span class="type">int</span> a;</span><br><span class="line">	<span class="type">char</span> b;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">foo</span> *<span class="title">c</span>;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>They provide enough space and <strong>aligns</strong> the data with padding!</li>
+<li>The actual layout on a 32 bit architecture would be:<ul>
+<li>4-bytes for a</li>
+<li>1 byte for b</li>
+<li>3 unused bytes (pad the rest of them so that we have aligned accesses)</li>
+<li>4 bytes for C</li>
+<li>sizeof(struct foo) &#x3D;&#x3D; 12</li>
+</ul>
+</li>
+</ul>
+<h3 id="Unions-in-C"><a href="#Unions-in-C" class="headerlink" title="Unions in C"></a>Unions in C</h3><ul>
+<li>A “union” is also an instruction in C on how to arrange a bunch of bits<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">union</span> <span class="title">foo</span> &#123;</span></span><br><span class="line">	<span class="type">int</span> a;</span><br><span class="line">	<span class="type">char</span> b;</span><br><span class="line">	<span class="class"><span class="keyword">union</span> <span class="title">foo</span> *<span class="title">c</span>;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>Provides enough space for the <strong>largest element</strong><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">union</span> <span class="title">foo</span> <span class="title">f</span>;</span></span><br><span class="line">f.a = <span class="number">0xDEADB33F</span>;  <span class="comment">//treat f as an integer and store that value</span></span><br><span class="line">f.c = &amp;f;  <span class="comment">//treat f as a pointer of type &quot;union foo*&quot; and store the address of f in itself</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="Differences-between-C-and-Java"><a href="#Differences-between-C-and-Java" class="headerlink" title="Differences between C and Java"></a>Differences between C and Java</h2><table>
+<thead>
+<tr>
+<th></th>
+<th>C</th>
+<th>Java</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Type of Language</td>
+<td>Function Oriented</td>
+<td>Object Oriented</td>
+</tr>
+<tr>
+<td>Programming Unit</td>
+<td>Function</td>
+<td>Class &#x3D; Abstract Data Type</td>
+</tr>
+<tr>
+<td>Compilation</td>
+<td>Creates machine-dependent code</td>
+<td>Creates machine-independent code</td>
+</tr>
+<tr>
+<td>Execution</td>
+<td>Loads and <em>executes</em> program</td>
+<td>JVM <em>interprets</em> bytecode</td>
+</tr>
+<tr>
+<td>Hello World</td>
+<td>……</td>
+<td>……</td>
+</tr>
+<tr>
+<td>Memory management</td>
+<td>Manual(malloc, free)</td>
+<td>Automatic(garbage collection)</td>
+</tr>
+</tbody></table>
+<h1 id="C-Syntax-and-Control-Flow"><a href="#C-Syntax-and-Control-Flow" class="headerlink" title="C Syntax and Control Flow"></a>C Syntax and Control Flow</h1><h2 id="Operators"><a href="#Operators" class="headerlink" title="Operators"></a>Operators</h2><ul>
+<li>arithmatic: +, -, *, &#x2F;, %</li>
+<li>assignment: &#x3D;</li>
+<li>augmented assignment: +&#x3D;, -&#x3D;, *&#x3D;, &#x2F;&#x3D;, %&#x3D;, &amp;&#x3D;, |&#x3D;, ^&#x3D;, &lt;&lt;&#x3D;, &gt;&gt;&#x3D;</li>
+<li>bitwise logic: ~, &amp;, |, ^</li>
+<li>bitwise shifts: &lt;&lt;, &gt;&gt;</li>
+<li>boolean login: !, &amp;&amp;, ||</li>
+<li>equality testing: =&#x3D;, !&#x3D;</li>
+<li>subexpression grouping: ( )</li>
+<li>order relations: &lt;, &lt;&#x3D;, &gt;, &gt;&#x3D;</li>
+<li>increment and decrement: ++ and –</li>
+<li>member selection: ., -&gt;</li>
+<li>conditional evaluation: ? :</li>
+</ul>
+<h2 id="Generic-C-Program-Layout"><a href="#Generic-C-Program-Layout" class="headerlink" title="Generic C Program Layout"></a>Generic C Program Layout</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//-------handled by Preprocessor-------</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;system_files&gt;</span>           <span class="comment">//Dumps other files here(.h and.o)</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;local_files&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> macro_name_macro_expr     <span class="comment">//Macro substitutions</span></span></span><br><span class="line"><span class="comment">//-------handled by Preprocessor-------</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//-------Remember rules of scope (internal vs. external)-------</span></span><br><span class="line"><span class="comment">/* declare functions */</span></span><br><span class="line"><span class="comment">/* declare global variables and structs */</span></span><br><span class="line"><span class="comment">//-------------------------------------------------------------</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//Programs start at main() </span></span><br><span class="line"><span class="comment">//main() must return int</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span> &#123;</span><br><span class="line">	<span class="comment">/*the innards */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* define other functions */</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>typically the return value of <code>main()</code> is the exit code</li>
+</ul>
+<h2 id="C-Syntax-main"><a href="#C-Syntax-main" class="headerlink" title="C Syntax: main"></a>C Syntax: main</h2><ul>
+<li>To get arguments to the main function, use: <ul>
+<li><code>int main(int argc, char *argv[])</code></li>
+</ul>
+</li>
+<li>What does this mean? </li>
+<li><strong>argc</strong> (argument count) contains the number of strings on the command line (the executable path counts as one, plus one for each argument). </li>
+<li><strong>argv</strong> (argument value) is an array containing pointers to the arguments as strings (more on pointers later)</li>
+</ul>
+<h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><p>$ .&#x2F;foo hello 87 </p>
+<ul>
+<li>Here argc &#x3D; 3 and the array argv contains pointers to the following strings:<br>  argv[0] &#x3D; “.&#x2F;foo”<br>  argv[1] &#x3D; “hello”<br>  argv[2] &#x3D; “87” </li>
+<li>We will cover pointers and strings later.</li>
+</ul>
+<h2 id="C-Syntax-Variable-Declarations"><a href="#C-Syntax-Variable-Declarations" class="headerlink" title="C Syntax: Variable Declarations"></a>C Syntax: Variable Declarations</h2><ul>
+<li>All variable declarations must appear before they are used (e.g. at the beginning of a block of code) </li>
+<li>A variable may be initialized in its declaration; if not, it holds garbage! </li>
+<li>Variables of the same type may be declared on the same line </li>
+<li>Examples of declarations: <ul>
+<li>Correct:    <code>int x;</code><br>     <code>int a, b = 10, c;</code><br>     <code>int a, *b = NULL, c;</code></li>
+<li>Incorrect: <code>short x = 1, float y = 1.0;</code><br>     <code>z = &#39;c&#39;;</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="C-Syntax-True-or-False"><a href="#C-Syntax-True-or-False" class="headerlink" title="C Syntax: True or False"></a>C Syntax: True or False</h2><ul>
+<li>No explicit Boolean type in C (unlike Java) </li>
+<li>What evaluates to FALSE in C? <ul>
+<li>0 (integer) </li>
+<li>NULL (a special kind of pointer: more on this later)</li>
+</ul>
+</li>
+<li>What evaluates to TRUE in C? <ul>
+<li>Anything that isn’t false is true </li>
+<li>Same idea as in Scheme: only #f is false, anything else is true</li>
+</ul>
+</li>
+</ul>
+<h2 id="C-Syntax-Control-Flow"><a href="#C-Syntax-Control-Flow" class="headerlink" title="C Syntax: Control Flow"></a>C Syntax: Control Flow</h2><h3 id="if-else"><a href="#if-else" class="headerlink" title="if-else"></a>if-else</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (expression)&#123; statement &#125; </span><br><span class="line"><span class="keyword">if</span> (expression)&#123; statement1 &#125; </span><br><span class="line"><span class="keyword">else</span> &#123; statement2 &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="while"><a href="#while" class="headerlink" title="while"></a>while</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (expression) &#123; </span><br><span class="line">	statement;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">do</span> &#123; </span><br><span class="line">	statement </span><br><span class="line">&#125; <span class="keyword">while</span> (expression);</span><br></pre></td></tr></table></figure>
+
+<h3 id="for"><a href="#for" class="headerlink" title="for"></a>for</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (initialize; check; update)&#123;</span><br><span class="line">	statement </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="switch"><a href="#switch" class="headerlink" title="switch"></a>switch</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span> (expression) &#123; </span><br><span class="line">	<span class="keyword">case</span> const1: statements </span><br><span class="line">	<span class="keyword">case</span> const2: statements </span><br><span class="line">	<span class="keyword">default</span>: statements </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="switch-and-break"><a href="#switch-and-break" class="headerlink" title="switch and break"></a>switch and break</h4><ul>
+<li><p>Case statement (switch) requires proper placement of <code>break</code> to work properly </p>
+<ul>
+<li>“Fall through” effect: will execute all cases until a <code>break</code> is found <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span>(ch)&#123; </span><br><span class="line">	<span class="keyword">case</span> ‘+’: … <span class="comment">/* does + and - */</span> </span><br><span class="line">	<span class="keyword">case</span> ‘-’: … <span class="keyword">break</span>; </span><br><span class="line">	<span class="keyword">case</span> ‘*’: … <span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">default</span>: …</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>In certain cases, can take advantage of this!</p>
+</li>
+</ul>
+<h2 id="update-to-ANSI-C"><a href="#update-to-ANSI-C" class="headerlink" title="update to ANSI C"></a>update to ANSI C</h2><ul>
+<li><p>Yes! There have been a few. </p>
+</li>
+<li><p>We use “C99” or “C9x” std </p>
+<ul>
+<li>Use option “gcc -std&#x3D;c99” at compilation</li>
+</ul>
+</li>
+<li><p>References </p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/C99">http://en.wikipedia.org/wiki/C99</a> </li>
+<li><a target="_blank" rel="noopener" href="http://home.datacomm.ch/t_wolf/tw/c/c9x_changes.html">http://home.datacomm.ch/t_wolf/tw/c/c9x_changes.html</a></li>
+</ul>
+</li>
+<li><p>Highlights: </p>
+<ul>
+<li>Declarations in <code>for</code> loops, like Java (#15) </li>
+<li>Java-like &#x2F;&#x2F; comments (to end of line) (#10) </li>
+<li>Variable-length non-global arrays (#33) </li>
+<li>for explicit integer types (#38) </li>
+<li>for boolean logic definitions (#35）</li>
+</ul>
+</li>
+</ul>
+<h1 id="Pointers"><a href="#Pointers" class="headerlink" title="Pointers"></a>Pointers</h1><h2 id="Address-vs-Value"><a href="#Address-vs-Value" class="headerlink" title="Address vs. Value"></a>Address vs. Value</h2><ul>
+<li>Consider memory to be a single huge array –Each cell&#x2F;entry of the array has an address –Each cell also stores some value </li>
+<li><strong>Don’t confuse the address referring to a memory location with the value stored there</strong></li>
+</ul>
+<p><img src="/pic/CS61C/C-Intro-Pointer/3.png" alt="3"></p>
+<h2 id="Pointers-1"><a href="#Pointers-1" class="headerlink" title="Pointers"></a>Pointers</h2><ul>
+<li><strong>A pointer is a variable that contains an address</strong> <ul>
+<li>An address refers to a particular memory location, usually also associated with a variable name </li>
+<li>Name comes from the fact that you can say that it points to a memory location</li>
+</ul>
+</li>
+</ul>
+<p><img src="/pic/CS61C/C-Intro-Pointer/4.png" alt="4"></p>
+<h2 id="Pointer-Syntax"><a href="#Pointer-Syntax" class="headerlink" title="Pointer Syntax"></a>Pointer Syntax</h2><ul>
+<li><p><code>int *x;</code></p>
+<ul>
+<li>Declare <strong>variable <code>x</code></strong> as <strong>the address of</strong> an <code>int</code></li>
+</ul>
+</li>
+<li><p><code>x = &amp;y;</code></p>
+<ul>
+<li>Assign <strong>address of <code>y</code></strong> to x</li>
+<li><strong><code>&amp;</code></strong> called the “address operator” in this context</li>
+</ul>
+</li>
+<li><p><code>z = *x;</code></p>
+<ul>
+<li>Assigns the <strong>value at address in <code>x</code></strong> to <code>z</code></li>
+<li><strong><code>*</code></strong> called the “dereference operator” in this context</li>
+</ul>
+</li>
+</ul>
+<h2 id="Example-1"><a href="#Example-1" class="headerlink" title="Example"></a>Example</h2><p><img src="/pic/CS61C/C-Intro-Pointer/5.png" alt="5"></p>
+<h2 id="Pointer-Types"><a href="#Pointer-Types" class="headerlink" title="Pointer Types"></a>Pointer Types</h2><ul>
+<li><p>Pointers are used to point to one kind of data (int, char, a struct, etc.) </p>
+<ul>
+<li>Pointers to pointers? Oh yes! (e.g. <code>int **pp</code>, <code>pp</code> is called a double pointer )</li>
+</ul>
+</li>
+<li><p>Exception is the type void *, which can point to anything (generic pointer) </p>
+<ul>
+<li>Use sparingly to help avoid program bugs and other bad things!</li>
+</ul>
+</li>
+<li><p>Functions can return pointers</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">char</span> *<span class="title function_">foo</span> <span class="params">()</span> &#123; </span><br><span class="line">	<span class="keyword">return</span> “Hello World”; </span><br><span class="line">&#125;</span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line">- Placement of * does not matter to compiler, but might to you </span><br><span class="line">	- `<span class="type">int</span>* x` is the same as `<span class="type">int</span> *x` </span><br><span class="line">	- `<span class="type">int</span> *x,y,z;` is the same as `<span class="type">int</span>* x,y,z;` but NOT the same as `<span class="type">int</span> *x,*y,*z;`</span><br><span class="line"></span><br><span class="line">## Pointers and Parameter Passing</span><br><span class="line"></span><br><span class="line">- Java and C pass parameters “by value” </span><br><span class="line">	- Procedure/function/method gets **a copy** of the parameter, so changing the copy does not change the original</span><br><span class="line"></span><br><span class="line">```c</span><br><span class="line"><span class="type">void</span> <span class="title function_">addOne</span><span class="params">(<span class="type">int</span> x)</span> &#123;</span><br><span class="line">	x = x + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="type">int</span> y = <span class="number">3</span>;</span><br><span class="line">	addOne(y);</span><br><span class="line">	<span class="comment">//y remains equal to 3</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>How do we get a function to change a value? <ul>
+<li><strong>Pass “by reference”</strong>: function accepts a pointer and then modifies value by dereferencing it</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">addOne</span><span class="params">(<span class="type">int</span> *p)</span> &#123;</span><br><span class="line">	*p = *p + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="type">int</span> y = <span class="number">3</span>;</span><br><span class="line">	addOne(&amp;y);</span><br><span class="line">	<span class="comment">//y is now equal to 4</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="Pointers-in-C"><a href="#Pointers-in-C" class="headerlink" title="Pointers in C"></a>Pointers in C</h2><ul>
+<li><p>Why use pointers? </p>
+<ul>
+<li>When passing a large struct or array, it’s easier&#x2F;faster to pass a pointer than a copy of the whole thing </li>
+<li>In general, pointers allow cleaner, more compact code</li>
+</ul>
+</li>
+<li><p><strong>Careful</strong>: Pointers are likely the single largest source of bugs in C </p>
+<ul>
+<li>Most problematic with dynamic memory management, which we will cover later </li>
+<li>Dangling references and memory leaks</li>
+</ul>
+</li>
+</ul>
+<h2 id="Pointer-Bugs"><a href="#Pointer-Bugs" class="headerlink" title="Pointer Bugs"></a>Pointer Bugs</h2><ul>
+<li>Local variables in C are not initialized, they may contain anything (a.k.a. “garbage”) </li>
+<li>Declaring a pointer just allocates space to hold the pointer – it does not allocate the thing being pointed to!</li>
+</ul>
+<p>below are bad examples:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//TWO BAD EXAMPLES</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">f</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="type">int</span> *p, x;</span><br><span class="line">	x = *p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">f2</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="type">int</span> *ptr;</span><br><span class="line">	*ptr = <span class="number">5</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h1><ul>
+<li>C is an efficient (compiled) language, but leaves safety to the programmer <ul>
+<li>Weak type safety, variables not auto-initialized </li>
+<li>Use pointers with care: common source of bugs!</li>
+</ul>
+</li>
+<li>Pointer is a C version (abstraction) of a data address <ul>
+<li>Each memory location has an address and a value stored in it </li>
+<li><code>*</code> “follows” a pointer to its value </li>
+<li><code>&amp;</code> gets the address of a value</li>
+</ul>
+</li>
+<li>C functions “pass by value”</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://vks-feng.github.io/">Vks</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://vks-feng.github.io/">https://vks-feng.github.io/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">此文章版权归Vks所有，如有转载，请注明来自原作者</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/cs61c/">cs61c</a></div><div class="post_share"><div class="social-share" data-image="/img/VksAvatar.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/07/28/Number-Representation/" title="Number Representation"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Number Representation</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/07/28/Number-Representation/" title="Number Representation"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-28</div><div class="title">Number Representation</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/VksAvatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Vks</div><div class="author-info__description">志之所趋，无远弗届</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Vks-Feng"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Vks-Feng" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:vksfeng@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my blog!</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Overview"><span class="toc-number">1.</span> <span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Prerequisites"><span class="toc-number">2.</span> <span class="toc-text">Prerequisites</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Introduction"><span class="toc-number">3.</span> <span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Basic-C-Concepts"><span class="toc-number">4.</span> <span class="toc-text">Basic C Concepts</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Compilation"><span class="toc-number">4.1.</span> <span class="toc-text">Compilation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Compliation-Advantages"><span class="toc-number">4.1.1.</span> <span class="toc-text">Compliation Advantages</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Compliation-Disadvantages"><span class="toc-number">4.1.2.</span> <span class="toc-text">Compliation Disadvantages</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Variable-Types"><span class="toc-number">4.2.</span> <span class="toc-text">Variable Types</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Typed-Variables-in-C"><span class="toc-number">4.2.1.</span> <span class="toc-text">Typed Variables in C</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Characters"><span class="toc-number">4.2.2.</span> <span class="toc-text">Characters</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Typecasting-in-C-1-2"><span class="toc-number">4.2.3.</span> <span class="toc-text">Typecasting in C (1&#x2F;2)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Typed-Functions-in-C"><span class="toc-number">4.2.4.</span> <span class="toc-text">Typed Functions in C</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Structs-in-C"><span class="toc-number">4.2.5.</span> <span class="toc-text">Structs in C</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Structs-Alignment-and-Padding-in-C"><span class="toc-number">4.2.5.1.</span> <span class="toc-text">Structs Alignment and Padding in C</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Unions-in-C"><span class="toc-number">4.2.6.</span> <span class="toc-text">Unions in C</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Differences-between-C-and-Java"><span class="toc-number">4.3.</span> <span class="toc-text">Differences between C and Java</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#C-Syntax-and-Control-Flow"><span class="toc-number">5.</span> <span class="toc-text">C Syntax and Control Flow</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Operators"><span class="toc-number">5.1.</span> <span class="toc-text">Operators</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Generic-C-Program-Layout"><span class="toc-number">5.2.</span> <span class="toc-text">Generic C Program Layout</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-Syntax-main"><span class="toc-number">5.3.</span> <span class="toc-text">C Syntax: main</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Example"><span class="toc-number">5.3.1.</span> <span class="toc-text">Example</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-Syntax-Variable-Declarations"><span class="toc-number">5.4.</span> <span class="toc-text">C Syntax: Variable Declarations</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-Syntax-True-or-False"><span class="toc-number">5.5.</span> <span class="toc-text">C Syntax: True or False</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-Syntax-Control-Flow"><span class="toc-number">5.6.</span> <span class="toc-text">C Syntax: Control Flow</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#if-else"><span class="toc-number">5.6.1.</span> <span class="toc-text">if-else</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#while"><span class="toc-number">5.6.2.</span> <span class="toc-text">while</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#for"><span class="toc-number">5.6.3.</span> <span class="toc-text">for</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#switch"><span class="toc-number">5.6.4.</span> <span class="toc-text">switch</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#switch-and-break"><span class="toc-number">5.6.4.1.</span> <span class="toc-text">switch and break</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#update-to-ANSI-C"><span class="toc-number">5.7.</span> <span class="toc-text">update to ANSI C</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Pointers"><span class="toc-number">6.</span> <span class="toc-text">Pointers</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Address-vs-Value"><span class="toc-number">6.1.</span> <span class="toc-text">Address vs. Value</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pointers-1"><span class="toc-number">6.2.</span> <span class="toc-text">Pointers</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pointer-Syntax"><span class="toc-number">6.3.</span> <span class="toc-text">Pointer Syntax</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Example-1"><span class="toc-number">6.4.</span> <span class="toc-text">Example</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pointer-Types"><span class="toc-number">6.5.</span> <span class="toc-text">Pointer Types</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pointers-in-C"><span class="toc-number">6.6.</span> <span class="toc-text">Pointers in C</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pointer-Bugs"><span class="toc-number">6.7.</span> <span class="toc-text">Pointer Bugs</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Summary"><span class="toc-number">7.</span> <span class="toc-text">Summary</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/28/C-Introduction-Pointers/" title="C-Introduction,Pointers">C-Introduction,Pointers</a><time datetime="2024-07-28T13:54:38.000Z" title="发表于 2024-07-28 21:54:38">2024-07-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/28/Number-Representation/" title="Number Representation">Number Representation</a><time datetime="2024-07-28T13:52:46.000Z" title="发表于 2024-07-28 21:52:46">2024-07-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/26/%E5%9F%BA%E7%A1%80%E7%88%AC%E8%99%AB%E5%AD%A6%E4%B9%A0/" title="基础爬虫学习">基础爬虫学习</a><time datetime="2024-07-26T04:19:39.000Z" title="发表于 2024-07-26 12:19:39">2024-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/15/Docker%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/" title="Docker基础学习">Docker基础学习</a><time datetime="2024-07-15T11:40:05.000Z" title="发表于 2024-07-15 19:40:05">2024-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/01/CSAPP-Chapter7/" title="CSAPP_Chapter7">CSAPP_Chapter7</a><time datetime="2024-06-01T15:53:14.000Z" title="发表于 2024-06-01 23:53:14">2024-06-01</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By Vks</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">I wish you to become your own sun, no need to rely on who's light.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const initValine = () => {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'm9pkoaM51rwmIpdPUDukvQQj-MdYXbMMI',
+      appKey: 'YLQGj1L2xfuW0PeDPDsF20Bq',
+      avatar: 'monsterid',
+      serverURLs: 'https://m9pkoam5.api.lncldglobal.com',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  const loadValine = async () => {
+    if (typeof Valine === 'function') initValine()
+    else {
+      await getScript('https://cdn.jsdelivr.net/npm/valine@1.5.1/dist/Valine.min.js')
+      initValine()
+    }
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/canvas-fluttering-ribbon.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
