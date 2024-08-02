@@ -1,0 +1,664 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>C-Memory Management and Usage | Vks🐱</title><meta name="author" content="Vks"><meta name="copyright" content="Vks"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="C Memory Layout  Stack:  grow downward contains local variables and function frame information   Heap:  grow upward you can request space via malloc(),realloc or calloc and use the space with pointers">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C-Memory Management and Usage">
+<meta property="og:url" content="http://example.com/2024/08/02/C-Memory-Management-and-Usage/index.html">
+<meta property="og:site_name" content="Vks🐱">
+<meta property="og:description" content="C Memory Layout  Stack:  grow downward contains local variables and function frame information   Heap:  grow upward you can request space via malloc(),realloc or calloc and use the space with pointers">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/VksAvatar.png">
+<meta property="article:published_time" content="2024-08-02T08:21:26.000Z">
+<meta property="article:modified_time" content="2024-08-02T08:26:04.445Z">
+<meta property="article:author" content="Vks">
+<meta property="article:tag" content="cs61c">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/VksAvatar.png"><link rel="shortcut icon" href="/img/Vksicon.png"><link rel="canonical" href="http://example.com/2024/08/02/C-Memory-Management-and-Usage/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'C-Memory Management and Usage',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-08-02 16:26:04'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.2.0"></head><body><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><div class="loading-img" style="background-image:url(/img/VksAvatar.png);background-repeat: no-repeat;background-position:center;"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = 'hidden';
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+
+preloader.initLoading()
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (false) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><script>window.paceOptions = {
+  restartOnPushState: false
+}
+
+document.addEventListener('pjax:send', () => {
+  Pace.restart()
+})
+</script><link rel="stylesheet" href="/source/css/preload_change.css"/><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/VksAvatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Vks🐱"><span class="site-name">Vks🐱</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">C-Memory Management and Usage</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-08-02T08:21:26.000Z" title="发表于 2024-08-02 16:21:26">2024-08-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-08-02T08:26:04.445Z" title="更新于 2024-08-02 16:26:04">2024-08-02</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/cs61c/">cs61c</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="C-Memory Management and Usage"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="C-Memory-Layout"><a href="#C-Memory-Layout" class="headerlink" title="C Memory Layout"></a>C Memory Layout</h1><p><img src="/pic/CS61C/C-Memory/1.png" alt="1"></p>
+<ul>
+<li><p><strong>Stack</strong>:</p>
+<ul>
+<li>grow downward</li>
+<li>contains local variables and function frame information</li>
+</ul>
+</li>
+<li><p><strong>Heap</strong>:</p>
+<ul>
+<li>grow upward</li>
+<li>you can request space via <code>malloc()</code>,<code>realloc</code> or <code>calloc</code> and use the space with pointers typically</li>
+<li>it can be dynamically resized</li>
+</ul>
+</li>
+<li><p><strong>Static Data</strong>:</p>
+<ul>
+<li>does not grow or shrink, as this should be the same throughout the life tim of the program</li>
+<li>holds global and static variables</li>
+</ul>
+</li>
+<li><p><strong>Code</strong>:</p>
+<ul>
+<li>does not change (though it technologically can)</li>
+<li>this is where the program is loaded to and where the program starts</li>
+</ul>
+</li>
+<li><p>OS prevents accesses between stack and heap via virtual memory</p>
+</li>
+</ul>
+<h2 id="Where-Do-the-Variables-Go"><a href="#Where-Do-the-Variables-Go" class="headerlink" title="Where Do the Variables Go?"></a>Where Do the Variables Go?</h2><ul>
+<li>Declared outside a function:<ul>
+<li><strong>Static Data</strong></li>
+</ul>
+</li>
+<li>Declared inside a function:<ul>
+<li><strong>Stack</strong></li>
+<li><code>main()</code> is a function<ul>
+<li>functions have some information that it needs so it knows how to return and the parameters that are passed into it.</li>
+</ul>
+</li>
+<li>Freed when function returns<ul>
+<li>when function returns, it frees all that data off the stack, so the stack will go back to where it was before function was called</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Dynamically allocated:<ul>
+<li><strong>Heap</strong></li>
+<li>i.e. <code>malloc()</code></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> varGlobal;                             <span class="comment">//static data</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="type">int</span> varLocal;                          <span class="comment">//stack</span></span><br><span class="line">	<span class="type">int</span> *varDyn = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="type">int</span>));     <span class="comment">//heap</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="The-Stack"><a href="#The-Stack" class="headerlink" title="The Stack"></a>The Stack</h2><ul>
+<li><p>Each stack frame is a contiguous block of memory holding the local variables of a single procedure </p>
+</li>
+<li><p>A stack frame includes:</p>
+<ul>
+<li>Location of caller function</li>
+<li>Function arguments</li>
+<li>Space for local variables</li>
+</ul>
+</li>
+<li><p>Stack pointer (SP) tells where lowest (current) stack frame is </p>
+</li>
+<li><p>When procedure ends, stack pointer is moved back (but data remains (<strong>garbage!</strong>)); frees memory for future stack frames;</p>
+</li>
+<li><p>Last In, First Out(LIFO) data structure</p>
+<ul>
+<li>e.g. stack frames change when functions are called……</li>
+</ul>
+</li>
+</ul>
+<h3 id="Stack-Misuse-Example"><a href="#Stack-Misuse-Example" class="headerlink" title="Stack Misuse Example"></a>Stack Misuse Example</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> *<span class="title function_">getPtr</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="type">int</span> y;</span><br><span class="line">	y = <span class="number">3</span>;</span><br><span class="line">	<span class="keyword">return</span> &amp;y;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span> <span class="params">()</span> &#123;</span><br><span class="line">	<span class="type">int</span> *stackAddr, content;</span><br><span class="line">	stackAddr = getPtr();</span><br><span class="line">	content = *stackAddr;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, content); <span class="comment">/* 3 */</span></span><br><span class="line">	content = *stackAddr;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, content); <span class="comment">/* ? */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/pic/CS61C/C-Memory/2.png" alt="2"></p>
+<ul>
+<li>printf overwrites stack frame</li>
+<li><strong>Never return pointers to local variable from functions</strong></li>
+<li>Your compiler will warn you about this<ul>
+<li>don’t ignore such warnings !</li>
+</ul>
+</li>
+<li>实际运行的效果如下：<br><img src="/pic/CS61C/C-Memory/3.png" alt="3"></li>
+</ul>
+<p><img src="/pic/CS61C/C-Memory/4.png" alt="4"></p>
+<h2 id="Static-Data"><a href="#Static-Data" class="headerlink" title="Static Data"></a>Static Data</h2><ul>
+<li><p>Place for variables that persist</p>
+<ul>
+<li>Data not subject to comings and goings like function calls</li>
+<li>Examples: <strong>String literals, global variables</strong></li>
+<li>String literal example: char * str &#x3D; “hi”;</li>
+<li>Do not be mistaken with: char str[] &#x3D; “hi”; <ul>
+<li>This will put str on the stack!</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Size does not change, but sometimes data can </p>
+<ul>
+<li>Notably string literals cannot</li>
+</ul>
+</li>
+<li><p>Technically the static data is split into two different sections</p>
+<ul>
+<li>read-only section</li>
+<li>read-write section</li>
+</ul>
+</li>
+</ul>
+<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h2><ul>
+<li>Copy of your code goes here<ul>
+<li>C code becomes data too!</li>
+</ul>
+</li>
+<li>Does (should) not change<ul>
+<li>Typically read only</li>
+</ul>
+</li>
+</ul>
+<h1 id="Addressing-and-Endianness"><a href="#Addressing-and-Endianness" class="headerlink" title="Addressing and Endianness"></a>Addressing and Endianness</h1><ul>
+<li>The size of an address (and thus, the size of a pointer) in bytes depends on architecture (eg: 32-bit Windows, 64-bit Mac OS)<ul>
+<li>eg: for 32-bit, have $2^{32}$ possible addresses</li>
+<li>In this class, we will assume a machine is a 32-bit machine unless told otherwise</li>
+</ul>
+</li>
+<li>If a machine is <strong>byte-addressed</strong>, then each of its addresses points to a unique <strong>byte</strong><ul>
+<li>word-addresses &#x3D; address points to a word</li>
+<li>In this class, we will assume a machine is byte-addressed unless told otherwise.</li>
+</ul>
+</li>
+<li>Question: on a byte-addressed machine, how can we order the bytes of an integer in mem? <ul>
+<li>Answer: it depends</li>
+<li>this concept is actually called endianness</li>
+</ul>
+</li>
+</ul>
+<h2 id="Endianness"><a href="#Endianness" class="headerlink" title="Endianness"></a>Endianness</h2><ul>
+<li>Big Endian:<ul>
+<li>Descending numerical significance with ascending memory addresses</li>
+</ul>
+</li>
+<li>Little Endian<ul>
+<li>Ascending numerical significance with ascending mem<br><img src="/pic/CS61C/C-Memory/5.png" alt="5"><br>(In this class, we will assume a machine is little endian unless otherwise stated.)</li>
+</ul>
+</li>
+</ul>
+<h3 id="Common-Mistakes"><a href="#Common-Mistakes" class="headerlink" title="Common Mistakes"></a>Common Mistakes</h3><ul>
+<li>Endianness ONLY APPLIES to values that occupy multiple bytes </li>
+<li>Endianness refers to STORAGE IN MEMORY NOT number representation </li>
+<li>Ex: char c &#x3D; 97<ul>
+<li><code>c == 0b01100001</code> in both big and little endian</li>
+</ul>
+</li>
+<li>Arrays and pointers still have the same order<ul>
+<li><code>int a[5] = &#123;1, 2, 3, 4, 5&#125;</code> (assume address 0x40)</li>
+<li><code>&amp;(a[0]) == 0x40 &amp;&amp; a[0] == 1</code><ul>
+<li>in both big and little endian</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Dynamic-Memory-Allocation"><a href="#Dynamic-Memory-Allocation" class="headerlink" title="Dynamic Memory Allocation"></a>Dynamic Memory Allocation</h1><ul>
+<li>Want persisting memory (like static) even when we don’t know size at compile time?<ul>
+<li>e.g. input files, user interaction</li>
+<li>Stack won’t work because stack frames aren’t persistent</li>
+</ul>
+</li>
+<li>Dynamically allocated memory goes on the Heap<ul>
+<li>more permanent than Stack</li>
+</ul>
+</li>
+<li>Need as much space as possible without interfering with Stack<ul>
+<li>Start at opposite end and grow towards Stack</li>
+</ul>
+</li>
+</ul>
+<h2 id="sizeof"><a href="#sizeof" class="headerlink" title="sizeof()"></a>sizeof()</h2><ul>
+<li>If integer sizes are machine dependent, how do we tell? </li>
+<li>Use <code>sizeof()</code> operator<ul>
+<li>Returns size <u>in number of char-sized units</u> of a variable or data type name <ul>
+<li>Examples: <code>int x; sizeof(x); sizeof(int);</code></li>
+</ul>
+</li>
+<li><code>sizeof(char)</code>is ALWAYS 1! <ul>
+<li>Note the number of bits contained in a char is also not always 1 Byte though it generally is. This means sizeof is normally returning the number of Bytes which a variable or data type is. </li>
+<li>In this class, we will assume a character is always 1 Byte unless otherwise stated.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="sizeof-and-Arrays"><a href="#sizeof-and-Arrays" class="headerlink" title="sizeof() and Arrays"></a>sizeof() and Arrays</h3><ul>
+<li>Can we use sizeof to determine a length of an array?<ul>
+<li>Generally no but there is an exception! <ul>
+<li><code>int a[61];</code> </li>
+<li>If I was to perform sizeof(a), I would get back the number of characters it would take to fill the array a. </li>
+<li>To get the number of elements, I could do:<ul>
+<li>sizeof(a) &#x2F; sizeof(int)</li>
+</ul>
+</li>
+<li>This <strong>ONLY</strong> works for arrays defined on the stack <strong>IN THE SAME FUNCTION</strong>.</li>
+</ul>
+</li>
+<li>This is just something fun you should know, but please do not do this! You should be keeping track of an array size elsewhere!</li>
+</ul>
+</li>
+</ul>
+<h2 id="Allocating-Memory"><a href="#Allocating-Memory" class="headerlink" title="Allocating Memory"></a>Allocating Memory</h2><ul>
+<li>3 functions for requesting memory:<br>  <code>malloc()</code>,<code>calloc()</code>,and <code>realloc</code><ul>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/C_dynamic_memory_allocation">C dynamic memory allocation - Wikipedia</a></li>
+</ul>
+</li>
+<li><code>malloc(n)</code><ul>
+<li>Allocates a continuous block of <strong>n bytes</strong> of uninitialized memory (contains garbage!)</li>
+<li>Returns a pointer to the beginning of the allocated block; NULL indicates failed request (check for this!)</li>
+<li>Different blocks not necessarily adjacent and they might not be in order</li>
+</ul>
+</li>
+</ul>
+<h3 id="Using-malloc"><a href="#Using-malloc" class="headerlink" title="Using malloc()"></a>Using malloc()</h3><ul>
+<li>Almost always used for arrays or structs</li>
+<li>Good practice to use <code>sizeof()</code> and typecasting <ul>
+<li><strong><code>int *p = (int *) malloc(n*sizeof(int));</code></strong></li>
+<li><code>sizeof()</code> makes code more portable</li>
+<li><code>malloc()</code> returns <code>void *</code>; typecast will help you catch coding errors when pointer types don’t match</li>
+</ul>
+</li>
+<li>Can use array or pointer syntax to access</li>
+</ul>
+<h2 id="Releasing-Memory"><a href="#Releasing-Memory" class="headerlink" title="Releasing Memory"></a>Releasing Memory</h2><ul>
+<li>Release memory on the Heap using <code>free()</code><ul>
+<li>Memory is limited, release when done</li>
+</ul>
+</li>
+<li><strong><code>free(p)</code></strong><ul>
+<li>Pass it pointer <code>p</code> to beginning of allocated block; releases the whole block</li>
+<li><code>p</code> must be the address originally returned by <code>m/c/realloc()</code>, otherwise throws system exception</li>
+<li>Don’t call <code>free()</code> on a block that has already been released or on NULL</li>
+<li>Make sure you don’t lose the original address <ul>
+<li>eg: <code>p++</code> is a <strong>BAD IDEA</strong>; use a separate pointer</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Calloc"><a href="#Calloc" class="headerlink" title="Calloc"></a>Calloc</h3><ul>
+<li><code>void *calloc(size_t nmemb, size_t size)</code><ul>
+<li>Like malloc, except it initializes the memory to 0</li>
+<li><code>nmemb</code> is the number of members</li>
+<li><code>size</code> is the size of each member</li>
+<li>Ex for allocating space for 5 integers <ul>
+<li><code>int *p = (int *) calloc (5, sizeof (int));</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Realloc"><a href="#Realloc" class="headerlink" title="Realloc"></a>Realloc</h3><ul>
+<li>What happens when I need more or less memory in an array</li>
+<li><code>void *realloc(void *ptr, size_t size)</code><ul>
+<li>Takes in a ptr that has been the return of malloc&#x2F;calloc&#x2F;realloc and a new size</li>
+<li>Returns a pointer with now size space (or NULL) and copies any contents from ptr</li>
+</ul>
+</li>
+<li>Realloc can move or keep the address the same </li>
+<li>DO NOT rely on old ptr values</li>
+</ul>
+<h2 id="Dynamic-Memory-Example"><a href="#Dynamic-Memory-Example" class="headerlink" title="Dynamic Memory Example"></a>Dynamic Memory Example</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">int</span> x;</span><br><span class="line">    <span class="type">int</span> y;</span><br><span class="line">&#125; point;</span><br><span class="line"></span><br><span class="line">point *rect;    <span class="comment">/* opposite corners = rectangle */</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">if</span> (!(rect = (point*) <span class="built_in">malloc</span>(<span class="number">2</span>*<span class="keyword">sizeof</span>(point)) &#123;  <span class="comment">//check for returned NULL</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\nOut of memory!\n&quot;</span>)</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line">...   <span class="comment">//Do NOT change `rect` during this time !!!</span></span><br><span class="line"><span class="built_in">free</span>(rect);</span><br></pre></td></tr></table></figure>
+
+<h1 id="Common-Memory-Problems"><a href="#Common-Memory-Problems" class="headerlink" title="Common Memory Problems"></a>Common Memory Problems</h1><h2 id="Know-Your-Memory-Errors"><a href="#Know-Your-Memory-Errors" class="headerlink" title="Know Your Memory Errors"></a>Know Your Memory Errors</h2><ul>
+<li>Segmentation Fault <ul>
+<li>“An error in which a running Unix program <strong>attempts to access memory not allocated to it</strong> and terminates with a segmentation violation error and usually a core with a segmentation violation error and usually a core dump.”</li>
+</ul>
+</li>
+<li>Bus Error <ul>
+<li>“A fatal failure in the execution of a machine language instruction resulting from the processor detecting an anomalous condition on its bus. Such conditions anomalous condition on its bus. Such conditions include invalid address alignment (accessing a multi-byte number at an odd address), accessing a physical address that does not correspond to any device,or some other device-specific hardware error.”</li>
+</ul>
+</li>
+</ul>
+<h2 id="Common-Memory-Problem"><a href="#Common-Memory-Problem" class="headerlink" title="Common Memory Problem"></a>Common Memory Problem</h2><ol>
+<li>Using uninitialized values </li>
+<li>Using memory that you don’t own<ul>
+<li>Using NULL or garbage data as a pointer</li>
+<li>De-allocated stack or heap variable</li>
+<li>Out of bounds reference to stack or heap array</li>
+</ul>
+</li>
+<li>Freeing invalid memory </li>
+<li>Memory leaks</li>
+</ol>
+<h3 id="Using-uninitialized-values"><a href="#Using-uninitialized-values" class="headerlink" title="Using uninitialized values"></a>Using uninitialized values</h3><ul>
+<li>What is wrong with this code?<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">foo</span><span class="params">(<span class="type">int</span> *p)</span> &#123;</span><br><span class="line">	<span class="type">int</span> j;</span><br><span class="line">	*p = j;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">bar</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="type">int</span> i = <span class="number">10</span>;</span><br><span class="line">	foo(&amp;i);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;i = %d\n&quot;</span>, i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><code>j</code> is uninitialized (garbage), copied int <code>*p</code></li>
+<li>Using <code>i</code> which now contains garbage</li>
+</ul>
+<h3 id="Using-memory-that-you-don’t-own"><a href="#Using-memory-that-you-don’t-own" class="headerlink" title="Using memory that you don’t own"></a>Using memory that you don’t own</h3><p>1：</p>
+<ul>
+<li>What is wrong with this code?<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">node</span> &#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">node</span>* <span class="title">next</span>;</span></span><br><span class="line">	<span class="type">int</span> val;</span><br><span class="line">&#125; Node;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">findLastNodeValue</span><span class="params">(Node* head)</span> &#123;</span><br><span class="line">	<span class="keyword">while</span> (head-&gt;next != <span class="literal">NULL</span>) &#123;</span><br><span class="line">		head = head-&gt;next;</span><br><span class="line">		<span class="keyword">return</span> head-&gt;val;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>What if <code>head</code> is NULL</li>
+<li><strong>No warnings！ Just Seg Fault that needs finding！</strong></li>
+</ul>
+<p>2:</p>
+<ul>
+<li>What is wrong with this code?<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">char</span> *<span class="title function_">append</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* s1, <span class="type">const</span> <span class="type">char</span> *s2)</span> &#123; </span><br><span class="line">	<span class="type">const</span> <span class="type">int</span> MAXSIZE = <span class="number">128</span>; </span><br><span class="line">	<span class="type">char</span> result[MAXSIZE]; </span><br><span class="line">	<span class="type">int</span> i=<span class="number">0</span>, j=<span class="number">0</span>; </span><br><span class="line">	<span class="keyword">for</span> (; i &lt; MAXSIZE<span class="number">-1</span> &amp;&amp; j &lt; <span class="built_in">strlen</span>(s1); i++; j++)</span><br><span class="line">		result[i] = s1[j];</span><br><span class="line">	<span class="keyword">for</span> (; i &lt; MAXSIZE<span class="number">-1</span> &amp;&amp; j &lt; <span class="built_in">strlen</span>(s2); i++; j++)</span><br><span class="line">		result[i] = s2[j];</span><br><span class="line">	result[++i] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br></pre></td></tr></table></figure></li>
+<li><code>result</code> is defined on the stack(local array)</li>
+<li>Pointer to Stack(array) no longer valid once function returns</li>
+</ul>
+<p>3:</p>
+<ul>
+<li>What is wrong with this code?<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span> </span><br><span class="line">	<span class="type">char</span> *name; </span><br><span class="line">	<span class="type">int</span> age; </span><br><span class="line">&#125; Profile;  </span><br><span class="line"></span><br><span class="line">Profile *person =(Profile *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Profile)); </span><br><span class="line"><span class="type">char</span> *name = getName(); </span><br><span class="line">person-&gt;name = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="type">char</span>)*<span class="built_in">strlen</span>(name)); </span><br><span class="line"><span class="built_in">strcpy</span>(person-&gt;name,name); </span><br><span class="line">... <span class="comment">// Do stuff (that isn’t buggy)</span></span><br><span class="line"><span class="built_in">free</span>(person);</span><br><span class="line"><span class="built_in">free</span>(person-&gt;name)</span><br></pre></td></tr></table></figure></li>
+<li>Did not allocate space for the null terminator! <code>person-&gt;name = malloc(sizeof(char)*strlen(name));</code> Want <code>(strlen(name)+1)</code> here.</li>
+<li>Accessing memory after you’ve freed it. These statements should be switched.</li>
+</ul>
+<h3 id="Using-Memory-You-Haven’t-Allocated"><a href="#Using-Memory-You-Haven’t-Allocated" class="headerlink" title="Using Memory You Haven’t Allocated"></a>Using Memory You Haven’t Allocated</h3><ul>
+<li><p>What is wrong with this code?</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">StringManipulate</span><span class="params">()</span> &#123; </span><br><span class="line">	<span class="type">const</span> <span class="type">char</span> *name = “Safety Critical<span class="string">&quot;; </span></span><br><span class="line"><span class="string">	char *str = malloc(sizeof (char) * 10); </span></span><br><span class="line"><span class="string">	strncpy(str, name, 10); </span></span><br><span class="line"><span class="string">	str[10] = &#x27;\0&#x27;; </span></span><br><span class="line"><span class="string">	printf(&quot;</span>%s\n<span class="string">&quot;, str); //read until &#x27;\0&#x27;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>Write beyond array bounds</p>
+</li>
+<li><p>Read beyond array bounds</p>
+</li>
+<li><p>What is wrong with this code?</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">char</span> buffer[<span class="number">1024</span>]; <span class="comment">/* global */</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">foo</span> <span class="params">(<span class="type">char</span> *str)</span> &#123;</span><br><span class="line">	<span class="built_in">strcpy</span>(buffer, str);</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>What if more than a kibi characters?</p>
+</li>
+<li><p><strong>This is called BUFFER OVERRUN or BUFFER OVERFLOW and is a security flaw!!!</strong></p>
+</li>
+</ul>
+<h4 id="C-String-Standard-Functions-Revised"><a href="#C-String-Standard-Functions-Revised" class="headerlink" title="C String Standard Functions Revised"></a>C String Standard Functions Revised</h4><ul>
+<li>Accessible with #include&lt;string.h&gt; </li>
+<li><code>int strnlen(char *string,size_t n);</code><ul>
+<li>Returns the length of string (not including null term), searching up to n</li>
+</ul>
+</li>
+<li><code>int strncmp(char *str1, char *str2, size_t n);</code><ul>
+<li>Return 0 if <code>str1</code> and <code>str2</code> are identical (how is this different from <code>str1 == str2</code>?), comparing up to n bytes</li>
+</ul>
+</li>
+<li><code>char *strncpy(char *dst, char *src, size_t n);</code><ul>
+<li>Copy up to the first n bytes of string src to the memory at dst. Caller must ensure that dst has enough memory to hold the data to be copied</li>
+<li>Note: <code>dst = src</code> only copies pointer (the address)</li>
+</ul>
+</li>
+</ul>
+<h4 id="A-Safer-Version"><a href="#A-Safer-Version" class="headerlink" title="A Safer Version"></a>A Safer Version</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> ARR_LEN 1024; </span></span><br><span class="line"><span class="type">char</span> buffer[ARR_LEN]; <span class="comment">/* global */</span> </span><br><span class="line"><span class="type">int</span> <span class="title function_">foo</span><span class="params">(<span class="type">char</span> *str)</span> &#123; </span><br><span class="line">	<span class="built_in">strncpy</span>(buffer,str, ARR_LEN); </span><br><span class="line">	... </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Freeing-invalid-memory"><a href="#Freeing-invalid-memory" class="headerlink" title="Freeing invalid memory"></a>Freeing invalid memory</h3><ul>
+<li>What is wrong with these code?<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">FreeMemX</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="type">int</span> fnh = <span class="number">0</span>;</span><br><span class="line">	<span class="built_in">free</span>(&amp;fnh);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<ol>
+<li>Free of a Stack variable</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">FreeMemY</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="type">int</span> *fum = <span class="built_in">malloc</span>(<span class="number">4</span> * <span class="keyword">sizeof</span>(<span class="type">int</span>));</span><br><span class="line">	<span class="built_in">free</span>(fum + <span class="number">1</span>);</span><br><span class="line">	<span class="built_in">free</span>(fum);</span><br><span class="line">	<span class="built_in">free</span>(fum);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>Free of middle of block</li>
+<li>Free of already freed block</li>
+</ol>
+<h3 id="Memory-leaks"><a href="#Memory-leaks" class="headerlink" title="Memory leaks"></a>Memory leaks</h3><ul>
+<li><p>What is wrong with this code?</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> *pi;</span><br><span class="line">viod <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">	pi = (<span class="type">int</span>*)<span class="built_in">malloc</span>(<span class="number">8</span>*<span class="keyword">sizeof</span>(<span class="type">int</span>));</span><br><span class="line">	...</span><br><span class="line">	<span class="built_in">free</span>(pi);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">	pi = (<span class="type">int</span>*)<span class="built_in">malloc</span>(<span class="number">4</span>*<span class="keyword">sizeof</span>(<span class="type">int</span>));</span><br><span class="line">	foo(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><code>foo()</code> leaks memory</p>
+</li>
+<li><p><code>pi</code> in <code>foo()</code> override old pointer! No way to free those 4*sizeof(int) bytes now</p>
+</li>
+<li><p>Remember that Java has garbage collection but C doesn’t </p>
+</li>
+<li><p>Memory Leak: when you allocate memory but lose the pointer necessary to free it </p>
+</li>
+<li><p><strong>Rule of Thumb: More mallocs than frees probably indicates a memory leak</strong> </p>
+</li>
+<li><p>Potential memory leak: Changing pointer – do you still have copy to use with free later</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">plk = (<span class="type">int</span>*)<span class="built_in">malloc</span>(<span class="number">2</span>*<span class="keyword">sizeof</span>(<span class="type">int</span>));</span><br><span class="line">...</span><br><span class="line">plk++;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Debugging-Tools"><a href="#Debugging-Tools" class="headerlink" title="Debugging Tools"></a>Debugging Tools</h2><p><a target="_blank" rel="noopener" href="http://valgrind.org/">http://valgrind.org</a> </p>
+<ul>
+<li>Runtime analysis tools for finding memory errors<ul>
+<li>Dynamic analysis tool: Collects information on memory management while program runs</li>
+<li>No tool is guaranteed to find ALL memory bugs; this is a very challenging programming language research problem</li>
+</ul>
+</li>
+<li>You will be introduced to Valgrind in Lab 1</li>
+</ul>
+<h1 id="C-Wrap-up-Linked-List-Example"><a href="#C-Wrap-up-Linked-List-Example" class="headerlink" title="C Wrap-up: Linked List Example"></a>C Wrap-up: Linked List Example</h1><h2 id="Linked-List-Example"><a href="#Linked-List-Example" class="headerlink" title="Linked List Example"></a>Linked List Example</h2><ul>
+<li>We want to generate <strong>a linked list of strings</strong><ul>
+<li>this example uses structs, pointers, malloc(), and free()</li>
+</ul>
+</li>
+<li>Create a structure for nodes of the list:<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">	<span class="type">char</span> *value;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">Node</span> *<span class="title">next</span>;</span>    <span class="comment">//the link of the linked list</span></span><br><span class="line">&#125; node;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="Adding-a-Node-to-the-List"><a href="#Adding-a-Node-to-the-List" class="headerlink" title="Adding a Node to the List"></a>Adding a Node to the List</h2><ul>
+<li>Want to write addNode to support functionality as shown:</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">char</span> *s1 = <span class="string">&quot;start&quot;</span>, *s2 = <span class="string">&quot;middle&quot;</span>, *s3 = <span class="string">&quot;end&quot;</span>;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">node</span> *<span class="title">theList</span> =</span> <span class="literal">NULL</span>;</span><br><span class="line">theList = addNode(s3, theList);</span><br><span class="line">theList = addNode(s2, theList);</span><br><span class="line">theList = addNode(s1, theList);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>s1</code>,<code>s2</code>,<code>s3</code> are stored in the static portion of memory,because they are string literals</p>
+</li>
+<li><p>this function may take a NULL value, so we need to make sure that we handle that case, so we shouldn’t ever de-reference anything within that list</p>
+</li>
+<li><p>Let’s examine the $3^{rd}$ call (“start”);</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">node *<span class="title function_">addNode</span><span class="params">(<span class="type">char</span> *s, node *<span class="built_in">list</span>)</span> &#123;</span><br><span class="line">	node *new = (node *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(NodeStruct));</span><br><span class="line">	new-&gt;value = (<span class="type">char</span> *)<span class="built_in">malloc</span>(<span class="built_in">strlen</span>(s) + <span class="number">1</span>);    <span class="comment">//don&#x27;t forget this for the null terminator</span></span><br><span class="line">	<span class="built_in">strcpy</span>(new-&gt;value, s);</span><br><span class="line">	new-&gt;next = <span class="built_in">list</span>;</span><br><span class="line">	<span class="keyword">return</span> new;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Delete&#x2F;free the first node(“start”):</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">node *<span class="title function_">deleteNode</span><span class="params">(node *<span class="built_in">list</span>)</span> &#123;</span><br><span class="line">	node *temp = <span class="built_in">list</span>-&gt;next;</span><br><span class="line">	<span class="built_in">free</span>(<span class="built_in">list</span>-&gt;value);</span><br><span class="line">	<span class="built_in">free</span>(<span class="built_in">list</span>);</span><br><span class="line">	<span class="keyword">return</span> temp;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="Additional-Function"><a href="#Additional-Function" class="headerlink" title="Additional Function"></a>Additional Function</h3><ul>
+<li>How might you implement the following?<ul>
+<li>Append node to end of a list</li>
+<li>Delete&#x2F;free an entire list–Join two lists together</li>
+<li>Reorder a list alphabetically (sort)</li>
+</ul>
+</li>
+</ul>
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h1><p><img src="/pic/CS61C/C-Memory/6.png" alt="6"></p>
+<h1 id="Bonus-Slides"><a href="#Bonus-Slides" class="headerlink" title="Bonus Slides"></a>Bonus Slides</h1><h2 id="Memory-Management"><a href="#Memory-Management" class="headerlink" title="Memory Management"></a>Memory Management</h2><ul>
+<li>Many calls to malloc() and free() with many different size blocks – where are they placed? </li>
+<li>Want system to be fast with minimal memory overhead<ul>
+<li>Versus automatic garbage collection of Java</li>
+</ul>
+</li>
+<li>Want to avoid fragmentation, the tendency of free space on the heap to get separated into small chunks</li>
+</ul>
+<h2 id="Fragmentation-Example"><a href="#Fragmentation-Example" class="headerlink" title="Fragmentation Example"></a>Fragmentation Example</h2><p><img src="/pic/CS61C/C-Memory/7.png" alt="7"></p>
+<h2 id="Basic-Allocation-Strategy-K-R"><a href="#Basic-Allocation-Strategy-K-R" class="headerlink" title="Basic Allocation Strategy: K&amp;R"></a>Basic Allocation Strategy: K&amp;R</h2><ul>
+<li>This is just one of many possible memory management algorithms<ul>
+<li>Just to give you a taste</li>
+<li>No single best approach for every application</li>
+</ul>
+</li>
+</ul>
+<h3 id="K-R-Implementation"><a href="#K-R-Implementation" class="headerlink" title="K&amp;R Implementation"></a>K&amp;R Implementation</h3><ul>
+<li>Each block holds <strong>its own size</strong> and <strong>pointer to next block</strong> </li>
+<li><code>free()</code> adds block to the list, combines with adjacent free blocks </li>
+<li><code>malloc()</code> searches free list for block large enough to meet request<ul>
+<li>If multiple blocks fit request, which one do we use?</li>
+</ul>
+</li>
+</ul>
+<h2 id="Choosing-a-Block-in-malloc"><a href="#Choosing-a-Block-in-malloc" class="headerlink" title="Choosing a Block in malloc()"></a>Choosing a Block in malloc()</h2><ul>
+<li><strong>Best-fit</strong>: request Choose smallest block that fits <ul>
+<li>Tries to limit wasted fragmentation space, but takes more time and leaves lots of small blocks</li>
+</ul>
+</li>
+<li><strong>First-fit</strong>: Choose first block that is large enough (always starts from beginning)<ul>
+<li>Fast but tends to concentrate small blocks at beginning</li>
+</ul>
+</li>
+<li><strong>Next-fit</strong>: Like first-fit, but resume search from where we last left off <ul>
+<li>Fast and does not concentrate small blocks at front</li>
+</ul>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://vks-feng.github.io/">Vks</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://vks-feng.github.io/">https://vks-feng.github.io/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">此文章版权归Vks所有，如有转载，请注明来自原作者</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/cs61c/">cs61c</a></div><div class="post_share"><div class="social-share" data-image="/img/VksAvatar.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/08/01/C-Arrays-Strings-More-Pointers/" title="C Arrays,Strings,More Pointers"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">C Arrays,Strings,More Pointers</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/07/28/C-Introduction-Pointers/" title="C-Introduction,Pointers"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-28</div><div class="title">C-Introduction,Pointers</div></div></a></div><div><a href="/2024/07/28/Number-Representation/" title="Number Representation"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-28</div><div class="title">Number Representation</div></div></a></div><div><a href="/2024/08/01/C-Arrays-Strings-More-Pointers/" title="C Arrays,Strings,More Pointers"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-01</div><div class="title">C Arrays,Strings,More Pointers</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/VksAvatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Vks</div><div class="author-info__description">志之所趋，无远弗届</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Vks-Feng"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Vks-Feng" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:vksfeng@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my blog!</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#C-Memory-Layout"><span class="toc-number">1.</span> <span class="toc-text">C Memory Layout</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Where-Do-the-Variables-Go"><span class="toc-number">1.1.</span> <span class="toc-text">Where Do the Variables Go?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-Stack"><span class="toc-number">1.2.</span> <span class="toc-text">The Stack</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Stack-Misuse-Example"><span class="toc-number">1.2.1.</span> <span class="toc-text">Stack Misuse Example</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Static-Data"><span class="toc-number">1.3.</span> <span class="toc-text">Static Data</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Code"><span class="toc-number">1.4.</span> <span class="toc-text">Code</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Addressing-and-Endianness"><span class="toc-number">2.</span> <span class="toc-text">Addressing and Endianness</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Endianness"><span class="toc-number">2.1.</span> <span class="toc-text">Endianness</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Common-Mistakes"><span class="toc-number">2.1.1.</span> <span class="toc-text">Common Mistakes</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Dynamic-Memory-Allocation"><span class="toc-number">3.</span> <span class="toc-text">Dynamic Memory Allocation</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#sizeof"><span class="toc-number">3.1.</span> <span class="toc-text">sizeof()</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#sizeof-and-Arrays"><span class="toc-number">3.1.1.</span> <span class="toc-text">sizeof() and Arrays</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Allocating-Memory"><span class="toc-number">3.2.</span> <span class="toc-text">Allocating Memory</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-malloc"><span class="toc-number">3.2.1.</span> <span class="toc-text">Using malloc()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Releasing-Memory"><span class="toc-number">3.3.</span> <span class="toc-text">Releasing Memory</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Calloc"><span class="toc-number">3.3.1.</span> <span class="toc-text">Calloc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Realloc"><span class="toc-number">3.3.2.</span> <span class="toc-text">Realloc</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dynamic-Memory-Example"><span class="toc-number">3.4.</span> <span class="toc-text">Dynamic Memory Example</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Common-Memory-Problems"><span class="toc-number">4.</span> <span class="toc-text">Common Memory Problems</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Know-Your-Memory-Errors"><span class="toc-number">4.1.</span> <span class="toc-text">Know Your Memory Errors</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Common-Memory-Problem"><span class="toc-number">4.2.</span> <span class="toc-text">Common Memory Problem</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-uninitialized-values"><span class="toc-number">4.2.1.</span> <span class="toc-text">Using uninitialized values</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-memory-that-you-don%E2%80%99t-own"><span class="toc-number">4.2.2.</span> <span class="toc-text">Using memory that you don’t own</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-Memory-You-Haven%E2%80%99t-Allocated"><span class="toc-number">4.2.3.</span> <span class="toc-text">Using Memory You Haven’t Allocated</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#C-String-Standard-Functions-Revised"><span class="toc-number">4.2.3.1.</span> <span class="toc-text">C String Standard Functions Revised</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#A-Safer-Version"><span class="toc-number">4.2.3.2.</span> <span class="toc-text">A Safer Version</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Freeing-invalid-memory"><span class="toc-number">4.2.4.</span> <span class="toc-text">Freeing invalid memory</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Memory-leaks"><span class="toc-number">4.2.5.</span> <span class="toc-text">Memory leaks</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Debugging-Tools"><span class="toc-number">4.3.</span> <span class="toc-text">Debugging Tools</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#C-Wrap-up-Linked-List-Example"><span class="toc-number">5.</span> <span class="toc-text">C Wrap-up: Linked List Example</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Linked-List-Example"><span class="toc-number">5.1.</span> <span class="toc-text">Linked List Example</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Adding-a-Node-to-the-List"><span class="toc-number">5.2.</span> <span class="toc-text">Adding a Node to the List</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Additional-Function"><span class="toc-number">5.2.1.</span> <span class="toc-text">Additional Function</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Summary"><span class="toc-number">6.</span> <span class="toc-text">Summary</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Bonus-Slides"><span class="toc-number">7.</span> <span class="toc-text">Bonus Slides</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Memory-Management"><span class="toc-number">7.1.</span> <span class="toc-text">Memory Management</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Fragmentation-Example"><span class="toc-number">7.2.</span> <span class="toc-text">Fragmentation Example</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Basic-Allocation-Strategy-K-R"><span class="toc-number">7.3.</span> <span class="toc-text">Basic Allocation Strategy: K&amp;R</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#K-R-Implementation"><span class="toc-number">7.3.1.</span> <span class="toc-text">K&amp;R Implementation</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Choosing-a-Block-in-malloc"><span class="toc-number">7.4.</span> <span class="toc-text">Choosing a Block in malloc()</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/02/C-Memory-Management-and-Usage/" title="C-Memory Management and Usage">C-Memory Management and Usage</a><time datetime="2024-08-02T08:21:26.000Z" title="发表于 2024-08-02 16:21:26">2024-08-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/01/C-Arrays-Strings-More-Pointers/" title="C Arrays,Strings,More Pointers">C Arrays,Strings,More Pointers</a><time datetime="2024-08-01T10:58:38.000Z" title="发表于 2024-08-01 18:58:38">2024-08-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/28/C-Introduction-Pointers/" title="C-Introduction,Pointers">C-Introduction,Pointers</a><time datetime="2024-07-28T13:54:38.000Z" title="发表于 2024-07-28 21:54:38">2024-07-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/28/Number-Representation/" title="Number Representation">Number Representation</a><time datetime="2024-07-28T13:52:46.000Z" title="发表于 2024-07-28 21:52:46">2024-07-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/26/%E5%9F%BA%E7%A1%80%E7%88%AC%E8%99%AB%E5%AD%A6%E4%B9%A0/" title="基础爬虫学习">基础爬虫学习</a><time datetime="2024-07-26T04:19:39.000Z" title="发表于 2024-07-26 12:19:39">2024-07-26</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By Vks</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">I wish you to become your own sun, no need to rely on who's light.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const initValine = () => {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'm9pkoaM51rwmIpdPUDukvQQj-MdYXbMMI',
+      appKey: 'YLQGj1L2xfuW0PeDPDsF20Bq',
+      avatar: 'monsterid',
+      serverURLs: 'https://m9pkoam5.api.lncldglobal.com',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  const loadValine = async () => {
+    if (typeof Valine === 'function') initValine()
+    else {
+      await getScript('https://cdn.jsdelivr.net/npm/valine@1.5.1/dist/Valine.min.js')
+      initValine()
+    }
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/canvas-fluttering-ribbon.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
