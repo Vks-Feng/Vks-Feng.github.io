@@ -1,0 +1,895 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Introduction to Machine Language——RISC-V | Vks🐱</title><meta name="author" content="Vks"><meta name="copyright" content="Vks"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="BackgroundAssembly(Also known as:Assembly Language,ASM) A low-level programming language where the program instructions match a particular architecture’s operations  Splits a program into many small">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Introduction to Machine Language——RISC-V">
+<meta property="og:url" content="http://example.com/2024/08/04/Introduction-to-Machine-Language%E2%80%94%E2%80%94RISC-V/index.html">
+<meta property="og:site_name" content="Vks🐱">
+<meta property="og:description" content="BackgroundAssembly(Also known as:Assembly Language,ASM) A low-level programming language where the program instructions match a particular architecture’s operations  Splits a program into many small">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/VksAvatar.png">
+<meta property="article:published_time" content="2024-08-04T13:22:42.000Z">
+<meta property="article:modified_time" content="2024-08-04T13:29:53.706Z">
+<meta property="article:author" content="Vks">
+<meta property="article:tag" content="cs61c">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/VksAvatar.png"><link rel="shortcut icon" href="/img/Vksicon.png"><link rel="canonical" href="http://example.com/2024/08/04/Introduction-to-Machine-Language%E2%80%94%E2%80%94RISC-V/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Introduction to Machine Language——RISC-V',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-08-04 21:29:53'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.2.0"></head><body><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><div class="loading-img" style="background-image:url(/img/VksAvatar.png);background-repeat: no-repeat;background-position:center;"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = 'hidden';
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+
+preloader.initLoading()
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (false) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><script>window.paceOptions = {
+  restartOnPushState: false
+}
+
+document.addEventListener('pjax:send', () => {
+  Pace.restart()
+})
+</script><link rel="stylesheet" href="/source/css/preload_change.css"/><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/VksAvatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">20</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Vks🐱"><span class="site-name">Vks🐱</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Introduction to Machine Language——RISC-V</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-08-04T13:22:42.000Z" title="发表于 2024-08-04 21:22:42">2024-08-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-08-04T13:29:53.706Z" title="更新于 2024-08-04 21:29:53">2024-08-04</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/cs61c/">cs61c</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Introduction to Machine Language——RISC-V"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p><img src="/pic/CS61C/Intro-RISCV/1.png" alt="1"></p>
+<h1 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h1><h2 id="Assembly-Also-known-as-Assembly-Language-ASM"><a href="#Assembly-Also-known-as-Assembly-Language-ASM" class="headerlink" title="Assembly(Also known as:Assembly Language,ASM)"></a>Assembly(Also known as:Assembly Language,ASM)</h2><ul>
+<li><p>A low-level programming language where the program instructions match a particular architecture’s operations</p>
+</li>
+<li><p>Splits a program into many small instructions that each do one single part of the process</p>
+</li>
+</ul>
+<p>C program</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a = (b + c) - (d + e);</span><br></pre></td></tr></table></figure>
+
+<p>Assembly program</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">add t1, s3, s4</span><br><span class="line">add t2, s1, s2</span><br><span class="line">sub s0, t2, t1</span><br></pre></td></tr></table></figure>
+
+<h2 id="There-are-many-assembly-languages"><a href="#There-are-many-assembly-languages" class="headerlink" title="There are many assembly languages"></a>There are many assembly languages</h2><ul>
+<li><p>A low-level programming language where the program instructions match <strong>a particular architecture’s</strong> operations</p>
+</li>
+<li><p>Each architecture will have a different set of operations that it supports (although there are many similarities) </p>
+</li>
+<li><p>Assembly is not <em>portable</em> to other architectures (like C is)</p>
+</li>
+</ul>
+<h2 id="Mainstream-Instruction-Set-Architectures"><a href="#Mainstream-Instruction-Set-Architectures" class="headerlink" title="Mainstream Instruction Set Architectures"></a>Mainstream Instruction Set Architectures</h2><p><img src="/pic/CS61C/Intro-RISCV/2.png" alt="2"></p>
+<p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/X86_instruction_listings">x86 Instruction Set</a></p>
+<blockquote>
+<p>Intel is actually super long and super complicated</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="http://infocenter.arm.com/help/topic/com.arm.doc.qrc0001m/QRC0001_UAL.pdf">ARM Instruction Set</a></p>
+<blockquote>
+<p>It is still a little bit more advantaged and it has still a lot more features, plus it is also not open source</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://inst.eecs.berkeley.edu/~cs61c/su18/img/riscvcard.pdf">RISCV Instruction Set</a></p>
+<blockquote>
+<p>It’s open source of pre use and it’s designed for cloud computing embedded systems and especially academic use which is really nice because it’s really nice and easy language to learn and pick up on </p>
+</blockquote>
+<h2 id="Which-instructions-should-an-assembly-include"><a href="#Which-instructions-should-an-assembly-include" class="headerlink" title="Which instructions should an assembly include?"></a>Which instructions should an assembly include?</h2><p>There are some obviously useful instructions: </p>
+<ul>
+<li>add, subtract, and, bit shift </li>
+<li>read and write memory</li>
+</ul>
+<p>But what about: </p>
+<ul>
+<li>only run the next instruction if these two values are equal </li>
+<li>perform four pairwise multiplications simultaneously </li>
+<li>add two ascii numbers together (‘2’ + ‘3’ &#x3D; 5) 6&#x2F;30&#x2F;20</li>
+</ul>
+<h2 id="Complex-Reduced-Instruction-Set-Computing"><a href="#Complex-Reduced-Instruction-Set-Computing" class="headerlink" title="Complex&#x2F;Reduced Instruction Set Computing"></a>Complex&#x2F;Reduced Instruction Set Computing</h2><ul>
+<li><p>Early trend: add more and more instructions to do elaborate operations:<br>  Complex Instruction Set Computing (CISC)</p>
+<ul>
+<li>difficult to learn and comprehend language</li>
+<li>less work for the compiler</li>
+<li>complicated hardware runs more slowly</li>
+</ul>
+</li>
+<li><p>Opposite philosophy later began to dominate: Reduced Instruction Set Computing (RISC)</p>
+<ul>
+<li><strong>Simpler (and smaller) instruction set makes it easier to build fast hardware</strong></li>
+<li>Let software do the complicated operations by composing simpler ones</li>
+</ul>
+</li>
+</ul>
+<h2 id="RISC-dominates-modern-computing"><a href="#RISC-dominates-modern-computing" class="headerlink" title="RISC dominates modern computing"></a>RISC dominates modern computing</h2><p>How important is this idea? </p>
+<ul>
+<li>RISC architectures dominate computing<ul>
+<li>ARM is RISC and all smartphones use ARM</li>
+</ul>
+</li>
+<li>Old CISC architectures (x86) are RISC-like underneath these days </li>
+<li>2017 Turing Award to Patterson and Hennessy</li>
+</ul>
+<h2 id="RISC-V-is-what-we’ll-use-in-class"><a href="#RISC-V-is-what-we’ll-use-in-class" class="headerlink" title="RISC-V is what we’ll use in class"></a>RISC-V is what we’ll use in class</h2><ul>
+<li>Fifth generation of RISC design from UC Berkeley<ul>
+<li>Professor Krste Asanovic and the Adept Lab</li>
+</ul>
+</li>
+<li>Open-source Instruction Set specification </li>
+<li>Experiencing rapid uptake in industry and academia </li>
+<li>Appropriate for all levels of computing<ul>
+<li>Embedded microcontrollers to supercomputers</li>
+<li>32-bit, 64-bit, and 128-bit variants</li>
+<li>Designed with academic use in mind</li>
+</ul>
+</li>
+</ul>
+<h2 id="RISC-V-Resources"><a href="#RISC-V-Resources" class="headerlink" title="RISC-V Resources"></a>RISC-V Resources</h2><p>Full RISC-V Architecture<br><a target="_blank" rel="noopener" href="http://digitalassets.lib.berkeley.edu/techreports/ucb/text/EECS-2016-1.pdf">http://digitalassets.lib.berkeley.edu/techreports/ucb/text/EECS-2016-1.pdf</a> </p>
+<p>Everything we need for CS61C<br><a target="_blank" rel="noopener" href="https://cs61c.org/resources/pdf?file=riscvcard.pdf">https://cs61c.org/resources/pdf?file=riscvcard.pdf</a> (“Green Card”)</p>
+<h1 id="Registers"><a href="#Registers" class="headerlink" title="Registers"></a>Registers</h1><h2 id="Hardware-uses-registers-for-variables"><a href="#Hardware-uses-registers-for-variables" class="headerlink" title="Hardware uses registers for variables"></a>Hardware uses registers for variables</h2><ul>
+<li>Unlike C, assembly doesn’t have variables as you know them </li>
+<li>Instead, assembly uses registers to store values </li>
+<li>Registers are:<ul>
+<li>Small memories of a fixed size (32-bit in our system)</li>
+<li>Can be read or written</li>
+<li>Limited in number (32 registers on our system)</li>
+<li>Very fast and low power to access</li>
+</ul>
+</li>
+</ul>
+<h2 id="Registers-vs-Memory"><a href="#Registers-vs-Memory" class="headerlink" title="Registers vs. Memory"></a>Registers vs. Memory</h2><ul>
+<li>What if more variables than registers?<ul>
+<li>Keep most frequently used in registers and move the rest to memory (called spilling to memory)</li>
+</ul>
+</li>
+<li>Why are not all variables in memory?<ul>
+<li>Smaller is faster: registers 100-500 times faster</li>
+<li>Memory Hierarchy <ul>
+<li>Registers: 32 registers * 32 bits &#x3D; 128 Bytes </li>
+<li>RAM: 4-32 GB </li>
+<li>SSD: 100-1000 GB</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Great-Idea-3-Principle-of-Locality-Memory-Hierarchy"><a href="#Great-Idea-3-Principle-of-Locality-Memory-Hierarchy" class="headerlink" title="Great Idea #3: Principle of Locality&#x2F; Memory Hierarchy"></a>Great Idea #3: Principle of Locality&#x2F; Memory Hierarchy</h2><p><img src="/pic/CS61C/Intro-RISCV/3.png" alt="3"></p>
+<h3 id="Register"><a href="#Register" class="headerlink" title="Register"></a>Register</h3><p>on the CPU</p>
+<h3 id="CPU-Cache"><a href="#CPU-Cache" class="headerlink" title="CPU Cache"></a>CPU Cache</h3><blockquote>
+<p>It is actually a little buffer between physical memory and registers. The cache is only on your CPU,so it’s a lot faster and you can still access it. But it is slower than registers, but it is definitely much faster than memory.</p>
+</blockquote>
+<h3 id="Physical-Memory"><a href="#Physical-Memory" class="headerlink" title="Physical Memory"></a>Physical Memory</h3><blockquote>
+<p>This is somewhere else within the computer than the CPU, but it is something that is still pretty fast and used for active programs.</p>
+</blockquote>
+<h3 id="Solid-State-Memory"><a href="#Solid-State-Memory" class="headerlink" title="Solid State Memory"></a>Solid State Memory</h3><blockquote>
+<p>Such as solid state drives, flash drives those type of things, which is non-volatile, which means that you can actually unplug it from the computer and it doesn’t need power to keep the data that’s on it. These are slower than physical memory, but they are still a little bit faster than what we call file-based memory, which is like virtual memory in the sense that we have a hard drive that has different sectors on it that map data on it, or your OS maps data on it, so then you can actually store much more data.Once again, it is much slower. But the nice thing is that it’s also pretty cheap</p>
+</blockquote>
+<h2 id="RISCV-–-How-Many-Registers"><a href="#RISCV-–-How-Many-Registers" class="headerlink" title="RISCV – How Many Registers?"></a>RISCV – How Many Registers?</h2><ul>
+<li>Tradeoff between speed and availability<ul>
+<li>more registers → can house more variables</li>
+<li>simultaneously; all registers are slower.</li>
+</ul>
+</li>
+<li>RISCV has 32 registers (x0-x31)<ul>
+<li>Each register is 32 bits wide and holds a <strong>word</strong></li>
+</ul>
+</li>
+</ul>
+<p>Note: a word is a fixed sized piece of data handled as a unit by the instruction set or hardware of the processor. Normally a word is defined as the size of a CPU’s registers。</p>
+<h2 id="RISCV-Register"><a href="#RISCV-Register" class="headerlink" title="RISCV Register"></a>RISCV Register</h2><ul>
+<li>Register denoted by <code>&#39;x&#39;</code> can be referenced by number (<code>x0</code>-<code>x31</code>) or name:<ul>
+<li>Registers that hold programmer variables:<ul>
+<li>(Register ‘Name’ ⬌ Register ‘ID’&#x2F;number)</li>
+<li>s0-s1    ⬌  x8-x9</li>
+<li>s2-s11  ⬌  x18-x27</li>
+</ul>
+</li>
+<li>Registers that hold temporary variables:<ul>
+<li>(Register ‘Name’ ⬌ Register ‘ID’&#x2F;number)</li>
+<li>t0-t2     ⬌   x5-x7</li>
+<li>t3-t6     ⬌   x28-x31</li>
+</ul>
+</li>
+<li>Other registers have special purposes we’ll discuss later</li>
+</ul>
+</li>
+<li><em>Registers have no type</em> (C concept); the operation being performed determines how register contents are treated</li>
+</ul>
+<h2 id="A-Special-Register"><a href="#A-Special-Register" class="headerlink" title="A Special Register"></a>A Special Register</h2><p>What’s the most important number?(Disclaimer: in programming)</p>
+<h3 id="The-Zero-Register"><a href="#The-Zero-Register" class="headerlink" title="The Zero Register"></a>The Zero Register</h3><ul>
+<li>Zero appears so often in code and is so useful that it has its own register! </li>
+<li>Register zero (<code>x0</code> or <code>zero</code>) always has the value 0 and cannot be changed!<ul>
+<li>any instruction writing to <code>x0</code> has no effect</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>If you need to perform some operation that will change some portion of the CPU state, but you do not want to write it back to the register. You can just set the write back register to add Zero, and it will basically not do anything</p>
+</blockquote>
+<h2 id="Registers-–-Summary"><a href="#Registers-–-Summary" class="headerlink" title="Registers – Summary"></a>Registers – Summary</h2><ul>
+<li>In high-level languages, number of variables limited only by available memory </li>
+<li>ISAs have a fixed, small number of operands called <strong>registers</strong><ul>
+<li>Special locations built directly into hardware</li>
+<li>Benefit: Registers are EXTREMELY FAST (faster than 1 billionth of a second)</li>
+<li>Drawback: Operations can only be performed on these predetermined number of registers</li>
+</ul>
+</li>
+</ul>
+<h2 id="Registers-in-a-Computer"><a href="#Registers-in-a-Computer" class="headerlink" title="Registers in a Computer"></a>Registers in a Computer</h2><p><img src="/pic/CS61C/Intro-RISCV/4.png" alt="4"></p>
+<blockquote>
+<p>This finally brings us to the main topic or the main idea that we’re going to be bringing up in today’s lecture – <strong>That is how a computer actually works.</strong> </p>
+</blockquote>
+<blockquote>
+<p>So we have five big important things that a computer really has in it. We have input devices, output devices, memory, controller and a datapath.This is the basically the idea that any computer no matter how primitive or advanced it is can be divided up into these five parts.</p>
+</blockquote>
+<blockquote>
+<p>The input devices would essentially be bringing data from the outside world into the computer system.Then this data that we got from the input devices would be put into the memory.</p>
+</blockquote>
+<blockquote>
+<p>The datapath would be pulling from our memory using the logic from our controller, which tells the datapath what to do. And it might do some operations on this data and then store it back into memory</p>
+</blockquote>
+<blockquote>
+<p>Finally, we need the output devices that will allow us to actually take some of the computation that we had and output it to the real world so that we can perform real jobs.</p>
+</blockquote>
+<blockquote>
+<p>So the most common ways to connect these five components together is to use, actually, a network of buses, which is something that we won’t really cover in this class but it is something that is important to know. </p>
+</blockquote>
+<blockquote>
+<p>Registers are a very important part of the datapath, as they are basically a small version of memory that can be used when we are doing quick operations</p>
+</blockquote>
+<h1 id="Assembly-Code"><a href="#Assembly-Code" class="headerlink" title="Assembly Code"></a>Assembly Code</h1><h2 id="RISCV-Instructions"><a href="#RISCV-Instructions" class="headerlink" title="RISCV Instructions"></a>RISCV Instructions</h2><p>Instruction Syntax is rigid:<br>    <code>op dst, src1, src2</code></p>
+<ul>
+<li><p>1 operator, 3 operands </p>
+<ul>
+<li><code>op</code>&#x3D; operation name (“operator”) </li>
+<li><code>dst</code>&#x3D; register getting result (“destination”) </li>
+<li><code>src1</code>&#x3D; first register for operation (“source 1”) </li>
+<li><code>src2</code>&#x3D; second register for operation (“source 2”)</li>
+</ul>
+</li>
+<li><p>Keep hardware simple via regularity</p>
+</li>
+<li><p>One operation per instruction, at most one instruction per line </p>
+</li>
+<li><p>Assembly instructions are related to C operations (<code>=, +, -, *, /, &amp;, |, etc.</code>)</p>
+</li>
+<li><p>Must be, since C code decomposes into assembly!</p>
+</li>
+<li><p>A single line of C may break up into several lines of RISC-V</p>
+</li>
+</ul>
+<h2 id="Example-RISC-V-Assembly"><a href="#Example-RISC-V-Assembly" class="headerlink" title="Example RISC-V Assembly"></a>Example RISC-V Assembly</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># Fibonacci Sequence </span><br><span class="line">main:    add    t0, x0, x0 </span><br><span class="line">	     addi   t1, x0, 1 </span><br><span class="line">	     la     t3, n </span><br><span class="line">	     lw     t3, 0(t3) </span><br><span class="line">fib:     beq    t3, x0, finish </span><br><span class="line">         add    t2, t1, t0 </span><br><span class="line">         mv     t0, t1 </span><br><span class="line">         mv     t1, t2 </span><br><span class="line">         addi   t3, t3, -1 </span><br><span class="line">         j      fib </span><br><span class="line">finish:  addi   a0, x0, 1 </span><br><span class="line">         addi   a1, t0, 0 </span><br><span class="line">         ecall # print integer ecall </span><br><span class="line">         addi   a0, x0, 10 </span><br><span class="line">         ecall # terminate ecall</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Comments use the <code>#</code> symbol</li>
+<li>Labels(<code>main</code>,<code>fib</code>,<code>finish</code>) are arbitrary names that mark a section of code</li>
+</ul>
+<h1 id="Basic-Arithmetic-Instructions"><a href="#Basic-Arithmetic-Instructions" class="headerlink" title="Basic Arithmetic Instructions"></a>Basic Arithmetic Instructions</h1><h2 id="RISCV-Instructions-Example"><a href="#RISCV-Instructions-Example" class="headerlink" title="RISCV Instructions Example"></a>RISCV Instructions Example</h2><p>Assume here that the variables <code>a</code>, <code>b</code>, and <code>c</code> are assigned to registers <code>s1</code>, <code>s2</code>, and <code>s3</code>, respectively</p>
+<ul>
+<li><p>Integer Addition (add)</p>
+<ul>
+<li>C: a &#x3D; b + c;</li>
+<li>RISCV: add s1, s2, s3</li>
+</ul>
+</li>
+<li><p>Integer Subtraction (sub)</p>
+<ul>
+<li>C: a &#x3D; b - c;</li>
+<li>RISCV: 6&#x2F;30&#x2F;20 sub s1, s2, s3</li>
+</ul>
+</li>
+<li><p>Suppose a→s0,b→s1,c→s2,d→s3 and e→s4. Convert the following C statement to RISCV:<br>  <code>a = (b + c) - (d + e);</code></p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">add t1, s3, s4 </span><br><span class="line">add t2, s1, s2 </span><br><span class="line">sub s0, t2, t1</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Ordering of instructions matters(must follow order of operations)</li>
+<li>Utilize temporary registers(<code>t1</code>,<code>t2</code>)</li>
+</ul>
+<h2 id="Greencard-Explanation"><a href="#Greencard-Explanation" class="headerlink" title="Greencard Explanation"></a>Greencard Explanation</h2><p><img src="/pic/CS61C/Intro-RISCV/5.png" alt="5"></p>
+<h1 id="Immediate-Instructions"><a href="#Immediate-Instructions" class="headerlink" title="Immediate Instructions"></a>Immediate Instructions</h1><ul>
+<li>Numerical constants are called immediates </li>
+<li>Separate instruction syntax for immediates:<br>  <code>opi dst, src, imm</code><ul>
+<li>Operation names end with ‘i’, replace 2nd source register with an immediate</li>
+<li>Immediates can be up to 12-bits in size</li>
+<li>Interpreted as sign-extended two’s complement</li>
+</ul>
+</li>
+<li>Example Uses: <ul>
+<li>addi s1, s2, 5 # a&#x3D;b+5</li>
+<li>addi s3, s3, 1 # c++</li>
+</ul>
+</li>
+</ul>
+<h2 id="RISC-V-Immediate-Example"><a href="#RISC-V-Immediate-Example" class="headerlink" title="RISC-V Immediate Example"></a>RISC-V Immediate Example</h2><ul>
+<li>Suppose <code>a→s0,b→s1.</code> Convert the following C statement to RISCV:<br>  <code>a = (5+b)-3</code></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">addi t1, s1, 5</span><br><span class="line">addi s0, t1, -3</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Why no <code>subi</code> instruction?</li>
+</ul>
+<blockquote>
+<p>This instruction doesn’t actually exist in RISCV, but why?</p>
+</blockquote>
+<blockquote>
+<p>subi is really just a negation of the immediate and so we could just negate the immediate when we’re programming.So why waste the space for another instruction when we can do it with one instruction already</p>
+</blockquote>
+<h1 id="Data-Transfer-Instructions"><a href="#Data-Transfer-Instructions" class="headerlink" title="Data Transfer Instructions"></a>Data Transfer Instructions</h1><h2 id="Data-Transfer"><a href="#Data-Transfer" class="headerlink" title="Data Transfer"></a>Data Transfer</h2><ul>
+<li>C variables map onto registers; What about large data structures like arrays?<ul>
+<li>Assembly can also access memory</li>
+</ul>
+</li>
+<li>But RISCV instructions only operate on registers! </li>
+<li>Specialized <strong>data transfer instructions</strong> move data between registers and memory<ul>
+<li>Store: register TO memory</li>
+<li>Load: register FROM memory</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="Five-Components-of-a-Computer-Data-Transfer-instructions-are-between-registers-Datapath-and-Memory-Allow-us-to-fetch-and-store-operands-in-memory"><a href="#Five-Components-of-a-Computer-Data-Transfer-instructions-are-between-registers-Datapath-and-Memory-Allow-us-to-fetch-and-store-operands-in-memory" class="headerlink" title=" Five Components of a Computer- Data Transfer instructions are between registers (Datapath) and Memory    - Allow us to fetch and store operands in memory"></a> <strong>Five Components of a Computer</strong><br>- Data Transfer instructions are between registers (Datapath) and Memory<br>    - Allow us to fetch and store operands in memory<br><img src="/pic/CS61C/Intro-RISCV/6.png" alt="6"></h2><ul>
+<li>Instruction syntax for data transfer:<br>  <code>memop reg, off(bAddr)</code><ul>
+<li><code>memop</code>&#x3D; operation name (“operator”)</li>
+<li><code>reg</code>&#x3D; register for operation source or destination</li>
+<li><code>bAddr</code>&#x3D; register with pointer to memory (“base address”)</li>
+<li><code>off</code>&#x3D; address offset (immediate) in bytes (“offset”)</li>
+</ul>
+</li>
+<li>Accesses memory at address <code>bAddr+off</code> </li>
+<li><strong>Reminder</strong>: A register holds a word of raw data (no type) – make sure to use a register (and offset) that point to a valid memory address</li>
+</ul>
+<h2 id="Memory-is-Byte-Addressed"><a href="#Memory-is-Byte-Addressed" class="headerlink" title="Memory is Byte-Addressed"></a>Memory is Byte-Addressed</h2><p><img src="/pic/CS61C/Intro-RISCV/7.png" alt="7"></p>
+<h2 id="Data-Transfer-Instructions-1"><a href="#Data-Transfer-Instructions-1" class="headerlink" title="Data Transfer Instructions"></a>Data Transfer Instructions</h2><ul>
+<li>Load Word (<code>lw</code>)<ul>
+<li>Takes data at address bAddr+off FROM memory and places it into reg</li>
+</ul>
+</li>
+<li>Store Word (<code>sw</code>)<ul>
+<li>Takes data in reg and stores it TO memory at address bAddr+off</li>
+</ul>
+</li>
+<li>Example Usage: (address of int array[]-&gt; s3, value of b-&gt; s2)<br>C:<br><code>array[10] = array[3]+b; `` Assembly:  </code>lw t0,12(s3) # t0&#x3D;A[3]<code> </code>add t0,s2,t0 # t0&#x3D;A[3]+b<code> </code>sw t0,40(s3) # A[10]&#x3D;A[3]+b&#96;</li>
+</ul>
+<h2 id="Values-can-start-off-in-memory"><a href="#Values-can-start-off-in-memory" class="headerlink" title="Values can start off in memory"></a>Values can start off in memory</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">.data</span><br><span class="line">source:</span><br><span class="line">		.word  3</span><br><span class="line">		.word  1</span><br><span class="line">		.word  4</span><br><span class="line">.text</span><br><span class="line">main:</span><br><span class="line">		la t1, source</span><br><span class="line">		lw t2, 0(t1)</span><br><span class="line">		lw t3, 4(t1)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>.data denotes data storage<ul>
+<li>.word, .byte, etc</li>
+<li>labels for pointing to data</li>
+</ul>
+</li>
+<li>.text denotes code storage</li>
+</ul>
+<p>List of Venus assembler directives:<br><a target="_blank" rel="noopener" href="https://github.com/ThaumicMekanism/venus/wiki/Assembler-Directives">https://github.com/ThaumicMekanism/venus/wiki/Assembler-Directives</a></p>
+<h2 id="Memory-and-Variable-Size"><a href="#Memory-and-Variable-Size" class="headerlink" title="Memory and Variable Size"></a>Memory and Variable Size</h2><p><img src="/pic/CS61C/Intro-RISCV/8.png" alt="8"></p>
+<h2 id="Endianness"><a href="#Endianness" class="headerlink" title="Endianness"></a>Endianness</h2><ul>
+<li>Big Endian: Most-significant byte at least address of word<ul>
+<li>word address &#x3D; address of most significant byte</li>
+</ul>
+</li>
+<li>Little Endian: Least-significant byte at least address of word<ul>
+<li>word address &#x3D; address of least significant byte<br><img src="/pic/CS61C/Intro-RISCV/9.png" alt="9"></li>
+</ul>
+</li>
+<li>RISC-V is <strong>Little Endian</strong></li>
+</ul>
+<h2 id="Sign-Extension"><a href="#Sign-Extension" class="headerlink" title="Sign Extension"></a>Sign Extension</h2><ul>
+<li>We want to represent the same number using more bits than before<ul>
+<li>Sign Extend: Take the most-significant bit and copy it to the new bits <ul>
+<li>0b 11 &#x3D; 0b 1111</li>
+</ul>
+</li>
+<li>Zero&#x2F;One Pad: Set the new bits with one&#x2F;zero. <ul>
+<li>Zero Pad: 0b 11 &#x3D; 0b 0011 </li>
+<li>One Pad: 0b 11 &#x3D; 0b 1111</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>All base RISC-V instructions sign extend when needed<ul>
+<li>auipc &amp; lui technically would but they are filling the upper bits so there is nothing to fill.</li>
+</ul>
+</li>
+</ul>
+<h2 id="Byte-Instructions"><a href="#Byte-Instructions" class="headerlink" title="Byte Instructions"></a>Byte Instructions</h2><table>
+<thead>
+<tr>
+<th>×</th>
+<th>×</th>
+<th>×</th>
+<th>√</th>
+</tr>
+</thead>
+</table>
+<p>(<code>lb</code>:load bytes; <code>sb</code>:store bytes)</p>
+<ul>
+<li><code>lb/sb</code> utilize the <strong>least significant byte of the register</strong><ul>
+<li>On <code>sb</code>, upper 24 bits are ignored</li>
+<li>On <code>lb</code>, upper 24 bits are filled by sign-extension</li>
+</ul>
+</li>
+<li>For example, let <code>s0 = 0x00000180</code>: <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lb s1,1(s0)   # s1=0x00000001</span><br><span class="line">lb s2,0(s0)   # s2=0xFFFFFF80 </span><br><span class="line">sb s2,2(s0)   # *(s0)=0x00800180</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="Half-Word-Instructions"><a href="#Half-Word-Instructions" class="headerlink" title="Half-Word Instructions"></a>Half-Word Instructions</h2><table>
+<thead>
+<tr>
+<th>×</th>
+<th>×</th>
+<th>√</th>
+<th>√</th>
+</tr>
+</thead>
+</table>
+<ul>
+<li><code>lh reg, off(bAddr)</code> “load half” </li>
+<li><code>sh reg, off(bAddr)</code> “store half”<ul>
+<li>On <code>sh</code>, upper 16 bits are ignored</li>
+<li>On <code>lh</code>, upper 16 bits are filled by sign-extension</li>
+</ul>
+</li>
+</ul>
+<h2 id="Unsigned-Instructions"><a href="#Unsigned-Instructions" class="headerlink" title="Unsigned Instructions"></a>Unsigned Instructions</h2><table>
+<thead>
+<tr>
+<th>×</th>
+<th>×</th>
+<th>√</th>
+<th>√</th>
+</tr>
+</thead>
+</table>
+<ul>
+<li><p><code>lhu reg, off(bAddr)</code>“load half unsigned” </p>
+</li>
+<li><p><code>lbu reg, off(bAddr)</code>“load byte unsigned”</p>
+<ul>
+<li>On <code>l(b/h)u</code>, upper bits are filled by zero-extension</li>
+</ul>
+</li>
+<li><p>Why no s(h&#x2F;b)u? Why no lwu?</p>
+</li>
+</ul>
+<blockquote>
+<p>In a 32-bit system, it just doesn’t make sense to actually have that instruction because our register size is 32 bits which means that we are not actually going to ever have to fill in additional bits which means that a load word and a load word unsigned would be the exact same value. And so it’s not needed after all RISCV is a reduced instruction set computing architecture which means we want to reduce the number of instructions we have total. So let’s just throw out low word unsigned.</p>
+</blockquote>
+<h2 id="Data-Transfer-Greencard-Explanation"><a href="#Data-Transfer-Greencard-Explanation" class="headerlink" title="Data Transfer Greencard Explanation"></a>Data Transfer Greencard Explanation</h2><p>!<img src="/pic/CS61C/Intro-RISCV/10.png" alt="10"><img src="/pic/CS61C/Intro-RISCV/11.png" alt="11"></p>
+<h1 id="Control-Flow-Instructions"><a href="#Control-Flow-Instructions" class="headerlink" title="Control Flow Instructions"></a>Control Flow Instructions</h1><h2 id="Computer-Decision-Making"><a href="#Computer-Decision-Making" class="headerlink" title="Computer Decision Making"></a>Computer Decision Making</h2><ul>
+<li>In C, we had control flow<ul>
+<li>Outcomes of comparative&#x2F;logical statements determined which blocks of code to execute</li>
+</ul>
+</li>
+<li>In RISCV, we can’t define blocks of code; all we have are <strong>labels</strong><ul>
+<li>Defined by text followed by a colon (e.g. <code>main:</code>) and refers to the instruction that follows</li>
+<li>Generate control flow by jumping to labels</li>
+<li>C has labels too, but they are considered bad style. <strong>Don’t use goto!</strong></li>
+</ul>
+</li>
+</ul>
+<h2 id="Decision-Making-Instructions"><a href="#Decision-Making-Instructions" class="headerlink" title="Decision Making Instructions"></a>Decision Making Instructions</h2><ul>
+<li>Branch If Equal (<code>beq</code>)<ul>
+<li><code>beq reg1,reg2,label</code></li>
+<li>If value in <code>reg1</code> &#x3D; value in <code>reg2</code>, go to <code>label</code></li>
+<li><strong>Otherwise go to the next instruction</strong></li>
+</ul>
+</li>
+<li>Branch If Not Equal (bne)<ul>
+<li><code>bne reg1,reg2,label</code></li>
+<li>If value in <code>reg1</code> ≠ value in <code>reg2</code>, go to <code>label1</code></li>
+</ul>
+</li>
+<li>Jump(j)<ul>
+<li><code>j label</code></li>
+<li>Unconditional jump to <code>label</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="Breaking-Down-the-If-Else"><a href="#Breaking-Down-the-If-Else" class="headerlink" title="Breaking Down the If Else"></a>Breaking Down the If Else</h3><ul>
+<li><p>C Code:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (i==j) &#123; </span><br><span class="line">	a = b <span class="comment">/* then */</span> </span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">	a = -b <span class="comment">/* else */</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>In English:</p>
+<ul>
+<li>If TRUE, execute the THEN block </li>
+<li>If FALSE, execute the ELSE block</li>
+</ul>
+</li>
+<li><p>RISCV(<code>bne</code>):</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># i→s0, j→s1 </span><br><span class="line"># a→s2, b→s3 </span><br><span class="line">beq s0,s1, then</span><br><span class="line">else:    # &lt;- this label unnecessary</span><br><span class="line">sub s2, x0, s3 </span><br><span class="line">j end </span><br><span class="line">then: </span><br><span class="line">add s2, s3, x0 </span><br><span class="line">end:</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>RISCV(<code>bne</code>):</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># i→s0, j→s1 </span><br><span class="line"># a→s2, b→s3 </span><br><span class="line">bne s0,s1,else </span><br><span class="line">then: </span><br><span class="line">add s2, s3, x0 </span><br><span class="line">j end </span><br><span class="line">else: </span><br><span class="line">sub s2, x0, s3 </span><br><span class="line">end:</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="Branching-on-Conditions-other-than-Not-Equal"><a href="#Branching-on-Conditions-other-than-Not-Equal" class="headerlink" title="Branching on Conditions other than (Not) Equal"></a>Branching on Conditions other than (Not) Equal</h2><ul>
+<li><p>Branch Less Than (blt)</p>
+<ul>
+<li><code>blt reg1, reg2, label</code></li>
+<li>If value in <code>reg1</code> &lt; value in <code>reg2</code>, go to <code>label</code></li>
+</ul>
+</li>
+<li><p>Branch Greater Than or Equal (bge)</p>
+<ul>
+<li><code>bge reg1,reg2, label</code></li>
+<li>If value in <code>reg1</code> &gt;&#x3D; value in <code>reg2</code>, go to <code>label</code></li>
+</ul>
+</li>
+<li><p>RISC Philosophy: </p>
+<ul>
+<li>Why create a “branch greater than” if you could swap the arguments and use “branch less than”?</li>
+</ul>
+</li>
+</ul>
+<h3 id="Breaking-Down-the-If-Else-1"><a href="#Breaking-Down-the-If-Else-1" class="headerlink" title="Breaking Down the If Else"></a>Breaking Down the If Else</h3><ul>
+<li><p>C Code:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(i&lt;j) &#123; </span><br><span class="line">	a = b <span class="comment">/* then */</span> </span><br><span class="line">&#125; <span class="keyword">else</span> &#123; </span><br><span class="line">	a = -b <span class="comment">/* else */</span> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>In English:</p>
+<ul>
+<li>If TRUE, execute the THEN block </li>
+<li>If FALSE, execute the ELSE block</li>
+</ul>
+</li>
+<li><p>RISCV(<code>beg</code>)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># i→s0, j→s1 </span><br><span class="line"># a→s2, b→s3 </span><br><span class="line"></span><br><span class="line">bge s0,s1,else </span><br><span class="line">then: </span><br><span class="line">add s2, s3, x0 </span><br><span class="line">j end </span><br><span class="line">else: </span><br><span class="line">sub s2, x0, s3 </span><br><span class="line">end:</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="Loops-in-RISCV"><a href="#Loops-in-RISCV" class="headerlink" title="Loops in RISCV"></a>Loops in RISCV</h2><ul>
+<li>There are three types of loops in C:<ul>
+<li><code>while, do…while, and for</code></li>
+<li>Each can be rewritten as either of the other two, so the same concepts of decision-making apply</li>
+</ul>
+</li>
+<li>These too can be created with branch instructions </li>
+<li><strong>Key Concept</strong>: Though there are multiple ways to write a loop in RISCV, the key to decision making is the conditional branch</li>
+</ul>
+<h2 id="Program-Counter"><a href="#Program-Counter" class="headerlink" title="Program Counter"></a>Program Counter</h2><ul>
+<li>Branches and Jumps change the flow of execution by modifying the Program Counter (PC) </li>
+<li>The PC is a special register that contains the current address of the code that is being executed<ul>
+<li>Not accessible as part of the normal 32 registers</li>
+</ul>
+</li>
+</ul>
+<h2 id="Instruction-Addresses"><a href="#Instruction-Addresses" class="headerlink" title="Instruction Addresses"></a>Instruction Addresses</h2><ul>
+<li><strong>Instructions are stored as data in memory and have addresses!</strong><ul>
+<li>Recall: Code section</li>
+<li>Labels get converted to instruction addresses</li>
+<li>More on this later this week</li>
+</ul>
+</li>
+<li>The PC tracks where in memory the current instruction is</li>
+</ul>
+<h2 id="Control-Flow-Greencard-Explanation"><a href="#Control-Flow-Greencard-Explanation" class="headerlink" title="Control Flow Greencard Explanation"></a>Control Flow Greencard Explanation</h2><p><img src="/pic/CS61C/Intro-RISCV/12.png" alt="12"></p>
+<blockquote>
+<p>If this condition is true then i want to update PC, which is to add to the PC the immediate value was such that the zeroth bit is a 1. So this is saying that i want to put a 1 in the zeroth bit the reason one we have this is essentially we’re padding  our immediate so then it’s always even and what this means is our PC value will always be half aligned. This is important to us because we have half word instructions which we want to support for our jumping even though we might not be using them. And so this is just the general concept of RISCV where it wants us for everything will be the same simple thing without having any differences between different variations of RISCV.</p>
+</blockquote>
+<h1 id="Shifting-Instructions"><a href="#Shifting-Instructions" class="headerlink" title="Shifting Instructions"></a>Shifting Instructions</h1><ul>
+<li>In binary, shifting an unsigned number left is the same as multiplying by the corresponding power of 2<ul>
+<li>Shifting operations are faster</li>
+<li>Does not work with shifting right&#x2F;division</li>
+</ul>
+</li>
+<li>Logical shift: Add zeros as you shift </li>
+<li>Arithmetic shift: Sign-extend as you shift<ul>
+<li>Only applies when you shift right (preserves sign)</li>
+</ul>
+</li>
+<li>Shift by immediate or value in a register</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Instruction Name</th>
+<th>RISCV</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Shift Left Logical</td>
+<td><code>sll s1,s2,s3</code></td>
+</tr>
+<tr>
+<td>Shift Left Logical Imm</td>
+<td><code>slli s1,s2,imm</code></td>
+</tr>
+<tr>
+<td>Shift Right Logical</td>
+<td><code>srl s1,s2,s3</code></td>
+</tr>
+<tr>
+<td>Shift Right Logical Imm</td>
+<td><code>srli s1,s2,imm</code></td>
+</tr>
+<tr>
+<td>Shift Right Arithmetic</td>
+<td><code>sra s1,s2,s3</code></td>
+</tr>
+<tr>
+<td>Shift Right Arithmetic Imm</td>
+<td><code>srai s1,s2,imm</code></td>
+</tr>
+</tbody></table>
+<ul>
+<li>When using immediate, only values 0-31 are practical </li>
+<li>When using variable, only lowest 5 bits are used (read as unsigned)</li>
+</ul>
+<h2 id="Shifting-Instruction"><a href="#Shifting-Instruction" class="headerlink" title="Shifting Instruction"></a>Shifting Instruction</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># sample calls to shift instructions </span><br><span class="line">addi t0,x0 ,-256 # t0=0xFFFFFF00 </span><br><span class="line">slli s0,t0,3     # s0=0xFFFFF800 </span><br><span class="line">srli s1,t0,8     # s1=0x00FFFFFF </span><br><span class="line">srai s2,t0,8     # s2=0xFFFFFFFF </span><br><span class="line">addi t1,x0 ,-22  # t1=0xFFFFFFEA </span><br><span class="line">			     # low 5: 0b01010 </span><br><span class="line">sll s3,t0,t1     # s3=0xFFFC0000 </span><br><span class="line"># same as slli s3,t0,10</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>Example 1:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># lbu using lw: lbu s1,1(s0) </span><br><span class="line">lw s1,0(s0)       # get word </span><br><span class="line">li t0,0x0000FF00  # load bitmask </span><br><span class="line">and s1,s1,t0      # get 2nd byte </span><br><span class="line">srli s1,s1,8      # shift into lowest</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Example 2:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># sb using sw: sb s1,3(s0) </span><br><span class="line">lw t0,0(s0)       # get current word </span><br><span class="line">li t1, 0x00FFFFFF # load bitmask </span><br><span class="line">and t0,t0,t1      # zero top byte </span><br><span class="line">slli t1,s1,24     # shift into highest </span><br><span class="line">or t0,t0,t1       # combine </span><br><span class="line">sw t0,0(s0)       # store back</span><br></pre></td></tr></table></figure>
+<p><img src="/pic/CS61C/Intro-RISCV/13.png" alt="13"></p>
+</li>
+</ul>
+<h1 id="Other-useful-Instructions"><a href="#Other-useful-Instructions" class="headerlink" title="Other useful Instructions"></a>Other useful Instructions</h1><h2 id="RISCV-Arithmetic-Instructions-Multiply-Extension"><a href="#RISCV-Arithmetic-Instructions-Multiply-Extension" class="headerlink" title="RISCV Arithmetic Instructions Multiply Extension"></a>RISCV Arithmetic Instructions Multiply Extension</h2><ul>
+<li>Multiplication (<code>mul</code> and <code>mulh</code>)<ul>
+<li><code>mul dst, src1, src2</code></li>
+<li><code>mulh dst, src1, src2</code></li>
+<li><code>src1*src2: lower 32-bits through mul, upper 32 bits in mulh</code></li>
+</ul>
+</li>
+<li>Division (div)<ul>
+<li><code>div dst, src1, src2</code></li>
+<li><code>rem dst, src1, src2</code></li>
+<li><code>src1/src2:</code> quotient via <code>div</code>, remainder via <code>rem</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="Bitwise-Instructions"><a href="#Bitwise-Instructions" class="headerlink" title="Bitwise Instructions"></a>Bitwise Instructions</h2><p>Note: a→s1, b→s2, c→s3</p>
+<table>
+<thead>
+<tr>
+<th>Instruction</th>
+<th>C</th>
+<th>RISCV</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>And</td>
+<td><code>a = b &amp; c;</code></td>
+<td><code>and s1,s2,s3</code></td>
+</tr>
+<tr>
+<td>And Immediate</td>
+<td><code>a = b &amp; 0x1;</code></td>
+<td><code>andi s1,s2,0x1</code></td>
+</tr>
+<tr>
+<td>Or</td>
+<td><code>a = b | c;</code></td>
+<td><code>or s1,s2,s3</code></td>
+</tr>
+<tr>
+<td>Or Immediate</td>
+<td><code>a = b | 0x5;</code></td>
+<td><code>ori s1,s2,0x5</code></td>
+</tr>
+<tr>
+<td>Exclusive Or</td>
+<td><code>a = b ^ c;</code></td>
+<td><code>xor s1,s2,s3</code></td>
+</tr>
+<tr>
+<td>Exclusive Or Immediate</td>
+<td><code>a = b ^ 0xF;</code></td>
+<td><code>xori s1,s2,0xF</code></td>
+</tr>
+</tbody></table>
+<h2 id="Compare-Instructions"><a href="#Compare-Instructions" class="headerlink" title="Compare Instructions"></a>Compare Instructions</h2><ul>
+<li>Set Less Than (slt)<ul>
+<li><code>slt dst, reg1,reg2</code></li>
+<li>If value in <code>reg1</code> &lt; value in <code>reg2</code>, <code>dst</code> &#x3D; 1, else 0</li>
+</ul>
+</li>
+<li>Set Less Than Immediate (slti)<ul>
+<li><code>slti dst, reg1,imm</code></li>
+<li>If value in <code>reg1</code> &lt; <code>imm</code>, <code>dst</code> &#x3D; 1, else 0</li>
+</ul>
+</li>
+</ul>
+<h2 id="Another-If-Else-Design"><a href="#Another-If-Else-Design" class="headerlink" title="Another If Else Design"></a>Another If Else Design</h2><ul>
+<li><p>C Code:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(i&lt;j) &#123;</span><br><span class="line">	a = b;    <span class="comment">/* then */</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">	a = -b;    <span class="comment">/* else */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>In English</p>
+<ul>
+<li>If TRUE, execute the THEN block </li>
+<li>If FALSE, execute the ELSE block</li>
+</ul>
+</li>
+<li><p>RISCV:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># i→s0, j→s1 </span><br><span class="line"># a→s2, b→s3 </span><br><span class="line">slt t0 s0 s1 </span><br><span class="line">beq t0,x0,else </span><br><span class="line">then: </span><br><span class="line">add s2, s3, x0 </span><br><span class="line">j end </span><br><span class="line">else: sub s2, x0, s3 </span><br><span class="line">end:</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="Environment-Call"><a href="#Environment-Call" class="headerlink" title="Environment Call"></a>Environment Call</h2><ul>
+<li><code>ecall</code> is a way for an application to interact with the operating system </li>
+<li>The value in register a0 is given to the OS which performs special functions<ul>
+<li>Printing values</li>
+<li>Exiting the program</li>
+<li>Allocating more memory for the program</li>
+</ul>
+</li>
+</ul>
+<p>A list of the ecall values supported by venus:<br><a target="_blank" rel="noopener" href="https://github.com/ThaumicMekanism/venus/wiki/Environmental-Calls">https://github.com/ThaumicMekanism/venus/wiki/Environmental-Calls</a></p>
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h1><ul>
+<li>Computers understand the instructions of their Instruction Set Architecture (ISA) </li>
+<li>RISC Design Principles<ul>
+<li>Smaller is faster, keep it simple</li>
+</ul>
+</li>
+<li>RISC-V Registers: <code>s0-s11, t0-t6, x0</code> </li>
+<li>RISC-V Instructions<ul>
+<li>Arithmetic: <code>add, sub, add</code></li>
+<li>Data Transfer:  <code>lw, sw</code> <ul>
+<li>Memory is byte-addressed</li>
+</ul>
+</li>
+<li>Control Flow: beq, bne, j</li>
+</ul>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://vks-feng.github.io/">Vks</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://vks-feng.github.io/">https://vks-feng.github.io/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">此文章版权归Vks所有，如有转载，请注明来自原作者</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/cs61c/">cs61c</a></div><div class="post_share"><div class="social-share" data-image="/img/VksAvatar.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/08/03/Floating-Point/" title="Floating Point"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Floating Point</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/07/28/C-Introduction-Pointers/" title="C-Introduction,Pointers"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-28</div><div class="title">C-Introduction,Pointers</div></div></a></div><div><a href="/2024/07/28/Number-Representation/" title="Number Representation"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-28</div><div class="title">Number Representation</div></div></a></div><div><a href="/2024/08/01/C-Arrays-Strings-More-Pointers/" title="C Arrays,Strings,More Pointers"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-01</div><div class="title">C Arrays,Strings,More Pointers</div></div></a></div><div><a href="/2024/08/02/C-Memory-Management-and-Usage/" title="C-Memory Management and Usage"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-02</div><div class="title">C-Memory Management and Usage</div></div></a></div><div><a href="/2024/08/03/Floating-Point/" title="Floating Point"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-03</div><div class="title">Floating Point</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/VksAvatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Vks</div><div class="author-info__description">志之所趋，无远弗届</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">20</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Vks-Feng"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Vks-Feng" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:vksfeng@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my blog!</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Background"><span class="toc-number">1.</span> <span class="toc-text">Background</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Assembly-Also-known-as-Assembly-Language-ASM"><span class="toc-number">1.1.</span> <span class="toc-text">Assembly(Also known as:Assembly Language,ASM)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#There-are-many-assembly-languages"><span class="toc-number">1.2.</span> <span class="toc-text">There are many assembly languages</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Mainstream-Instruction-Set-Architectures"><span class="toc-number">1.3.</span> <span class="toc-text">Mainstream Instruction Set Architectures</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Which-instructions-should-an-assembly-include"><span class="toc-number">1.4.</span> <span class="toc-text">Which instructions should an assembly include?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Complex-Reduced-Instruction-Set-Computing"><span class="toc-number">1.5.</span> <span class="toc-text">Complex&#x2F;Reduced Instruction Set Computing</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RISC-dominates-modern-computing"><span class="toc-number">1.6.</span> <span class="toc-text">RISC dominates modern computing</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RISC-V-is-what-we%E2%80%99ll-use-in-class"><span class="toc-number">1.7.</span> <span class="toc-text">RISC-V is what we’ll use in class</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RISC-V-Resources"><span class="toc-number">1.8.</span> <span class="toc-text">RISC-V Resources</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Registers"><span class="toc-number">2.</span> <span class="toc-text">Registers</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Hardware-uses-registers-for-variables"><span class="toc-number">2.1.</span> <span class="toc-text">Hardware uses registers for variables</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Registers-vs-Memory"><span class="toc-number">2.2.</span> <span class="toc-text">Registers vs. Memory</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Great-Idea-3-Principle-of-Locality-Memory-Hierarchy"><span class="toc-number">2.3.</span> <span class="toc-text">Great Idea #3: Principle of Locality&#x2F; Memory Hierarchy</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Register"><span class="toc-number">2.3.1.</span> <span class="toc-text">Register</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CPU-Cache"><span class="toc-number">2.3.2.</span> <span class="toc-text">CPU Cache</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Physical-Memory"><span class="toc-number">2.3.3.</span> <span class="toc-text">Physical Memory</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Solid-State-Memory"><span class="toc-number">2.3.4.</span> <span class="toc-text">Solid State Memory</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RISCV-%E2%80%93-How-Many-Registers"><span class="toc-number">2.4.</span> <span class="toc-text">RISCV – How Many Registers?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RISCV-Register"><span class="toc-number">2.5.</span> <span class="toc-text">RISCV Register</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#A-Special-Register"><span class="toc-number">2.6.</span> <span class="toc-text">A Special Register</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#The-Zero-Register"><span class="toc-number">2.6.1.</span> <span class="toc-text">The Zero Register</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Registers-%E2%80%93-Summary"><span class="toc-number">2.7.</span> <span class="toc-text">Registers – Summary</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Registers-in-a-Computer"><span class="toc-number">2.8.</span> <span class="toc-text">Registers in a Computer</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Assembly-Code"><span class="toc-number">3.</span> <span class="toc-text">Assembly Code</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#RISCV-Instructions"><span class="toc-number">3.1.</span> <span class="toc-text">RISCV Instructions</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Example-RISC-V-Assembly"><span class="toc-number">3.2.</span> <span class="toc-text">Example RISC-V Assembly</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Basic-Arithmetic-Instructions"><span class="toc-number">4.</span> <span class="toc-text">Basic Arithmetic Instructions</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#RISCV-Instructions-Example"><span class="toc-number">4.1.</span> <span class="toc-text">RISCV Instructions Example</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Greencard-Explanation"><span class="toc-number">4.2.</span> <span class="toc-text">Greencard Explanation</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Immediate-Instructions"><span class="toc-number">5.</span> <span class="toc-text">Immediate Instructions</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#RISC-V-Immediate-Example"><span class="toc-number">5.1.</span> <span class="toc-text">RISC-V Immediate Example</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Data-Transfer-Instructions"><span class="toc-number">6.</span> <span class="toc-text">Data Transfer Instructions</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Data-Transfer"><span class="toc-number">6.1.</span> <span class="toc-text">Data Transfer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Five-Components-of-a-Computer-Data-Transfer-instructions-are-between-registers-Datapath-and-Memory-Allow-us-to-fetch-and-store-operands-in-memory"><span class="toc-number">6.2.</span> <span class="toc-text"> Five Components of a Computer- Data Transfer instructions are between registers (Datapath) and Memory    - Allow us to fetch and store operands in memory</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Memory-is-Byte-Addressed"><span class="toc-number">6.3.</span> <span class="toc-text">Memory is Byte-Addressed</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Data-Transfer-Instructions-1"><span class="toc-number">6.4.</span> <span class="toc-text">Data Transfer Instructions</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Values-can-start-off-in-memory"><span class="toc-number">6.5.</span> <span class="toc-text">Values can start off in memory</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Memory-and-Variable-Size"><span class="toc-number">6.6.</span> <span class="toc-text">Memory and Variable Size</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Endianness"><span class="toc-number">6.7.</span> <span class="toc-text">Endianness</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sign-Extension"><span class="toc-number">6.8.</span> <span class="toc-text">Sign Extension</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Byte-Instructions"><span class="toc-number">6.9.</span> <span class="toc-text">Byte Instructions</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Half-Word-Instructions"><span class="toc-number">6.10.</span> <span class="toc-text">Half-Word Instructions</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Unsigned-Instructions"><span class="toc-number">6.11.</span> <span class="toc-text">Unsigned Instructions</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Data-Transfer-Greencard-Explanation"><span class="toc-number">6.12.</span> <span class="toc-text">Data Transfer Greencard Explanation</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Control-Flow-Instructions"><span class="toc-number">7.</span> <span class="toc-text">Control Flow Instructions</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Computer-Decision-Making"><span class="toc-number">7.1.</span> <span class="toc-text">Computer Decision Making</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Decision-Making-Instructions"><span class="toc-number">7.2.</span> <span class="toc-text">Decision Making Instructions</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Breaking-Down-the-If-Else"><span class="toc-number">7.2.1.</span> <span class="toc-text">Breaking Down the If Else</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Branching-on-Conditions-other-than-Not-Equal"><span class="toc-number">7.3.</span> <span class="toc-text">Branching on Conditions other than (Not) Equal</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Breaking-Down-the-If-Else-1"><span class="toc-number">7.3.1.</span> <span class="toc-text">Breaking Down the If Else</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Loops-in-RISCV"><span class="toc-number">7.4.</span> <span class="toc-text">Loops in RISCV</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Program-Counter"><span class="toc-number">7.5.</span> <span class="toc-text">Program Counter</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Instruction-Addresses"><span class="toc-number">7.6.</span> <span class="toc-text">Instruction Addresses</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Control-Flow-Greencard-Explanation"><span class="toc-number">7.7.</span> <span class="toc-text">Control Flow Greencard Explanation</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Shifting-Instructions"><span class="toc-number">8.</span> <span class="toc-text">Shifting Instructions</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Shifting-Instruction"><span class="toc-number">8.1.</span> <span class="toc-text">Shifting Instruction</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Other-useful-Instructions"><span class="toc-number">9.</span> <span class="toc-text">Other useful Instructions</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#RISCV-Arithmetic-Instructions-Multiply-Extension"><span class="toc-number">9.1.</span> <span class="toc-text">RISCV Arithmetic Instructions Multiply Extension</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bitwise-Instructions"><span class="toc-number">9.2.</span> <span class="toc-text">Bitwise Instructions</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Compare-Instructions"><span class="toc-number">9.3.</span> <span class="toc-text">Compare Instructions</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Another-If-Else-Design"><span class="toc-number">9.4.</span> <span class="toc-text">Another If Else Design</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Environment-Call"><span class="toc-number">9.5.</span> <span class="toc-text">Environment Call</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Summary"><span class="toc-number">10.</span> <span class="toc-text">Summary</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/04/Introduction-to-Machine-Language%E2%80%94%E2%80%94RISC-V/" title="Introduction to Machine Language——RISC-V">Introduction to Machine Language——RISC-V</a><time datetime="2024-08-04T13:22:42.000Z" title="发表于 2024-08-04 21:22:42">2024-08-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/03/Floating-Point/" title="Floating Point">Floating Point</a><time datetime="2024-08-03T09:10:24.000Z" title="发表于 2024-08-03 17:10:24">2024-08-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/02/C-Memory-Management-and-Usage/" title="C-Memory Management and Usage">C-Memory Management and Usage</a><time datetime="2024-08-02T08:21:26.000Z" title="发表于 2024-08-02 16:21:26">2024-08-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/01/C-Arrays-Strings-More-Pointers/" title="C Arrays,Strings,More Pointers">C Arrays,Strings,More Pointers</a><time datetime="2024-08-01T10:58:38.000Z" title="发表于 2024-08-01 18:58:38">2024-08-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/28/C-Introduction-Pointers/" title="C-Introduction,Pointers">C-Introduction,Pointers</a><time datetime="2024-07-28T13:54:38.000Z" title="发表于 2024-07-28 21:54:38">2024-07-28</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By Vks</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">I wish you to become your own sun, no need to rely on who's light.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;<a target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const initValine = () => {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'm9pkoaM51rwmIpdPUDukvQQj-MdYXbMMI',
+      appKey: 'YLQGj1L2xfuW0PeDPDsF20Bq',
+      avatar: 'monsterid',
+      serverURLs: 'https://m9pkoam5.api.lncldglobal.com',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  const loadValine = async () => {
+    if (typeof Valine === 'function') initValine()
+    else {
+      await getScript('https://cdn.jsdelivr.net/npm/valine@1.5.1/dist/Valine.min.js')
+      initValine()
+    }
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/canvas-fluttering-ribbon.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
